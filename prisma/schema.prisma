@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// User
+model User {
+  id          Int     @id @default(autoincrement())
+  username    String  @unique
+  phoneNumber String?
+  password    String
+}
+
+enum Grade {
+  GARDEN_3
+  GARDEN_4
+  GARDEN_5
+  GRADE_1
+  GRADE_2
+  GRADE_3
+  GRADE_4
+  GRADE_5
+  GRADE_6
+}
+
+enum Section {
+  A
+  B
+  C
+  D
+  E
+}
+
+model Alumno {
+  id             Int              @id @default(autoincrement())
+  dni            String
+  fullName       String
+  grade          Grade
+  section        Section
+  payments       Payment[]
+  PaymentConcept PaymentConcept[]
+}
+
+enum PaymentMethod {
+  YAPE
+  PLIN
+  BCP
+  BBVA
+  SCOTIABANK
+  INTERBANK
+  CASH
+  OTHER
+}
+
+model PaymentConcept {
+  id       Int     @id @default(autoincrement())
+  name     String
+  alumnoId Int?
+  alumno   Alumno? @relation(fields: [alumnoId], references: [id])
+  total    Decimal
+}
+
+model Payment {
+  id            Int           @id @default(autoincrement())
+  alumnoId      Int
+  alumno        Alumno        @relation(fields: [alumnoId], references: [id])
+  paymentMethod PaymentMethod @default(YAPE)
+  datePayment   DateTime      @default(now())
+  total         Decimal
+}

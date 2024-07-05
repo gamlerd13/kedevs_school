@@ -1,0 +1,20 @@
+REQUERIMIENTOS
+
+Implementación de Base de Datos (1 días)
+Estructura del funcionamiento de todo el sistema
+Módulo de Registro de Alumnos(3 días)
+    Guardar datos
+    Listar datos
+Autenticación (3 días)
+    Login
+    Logout
+    Ciberseguridad (protección de datos)
+    Tipos(administrador)
+Módulo de Reportes (4 días)
+    Boletas pdf
+    Cuadro (ver información)
+Módulo de pago (2 días)
+    Precio
+    Fecha
+    Relación alumno
+Configuración de Hosting y Servidor (3 días)
