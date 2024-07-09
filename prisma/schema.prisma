@@ -26,12 +26,21 @@ enum Grade {
   GARDEN_3
   GARDEN_4
   GARDEN_5
-  GRADE_1
-  GRADE_2
-  GRADE_3
-  GRADE_4
-  GRADE_5
-  GRADE_6
+  GRADE_PRIMARY_1
+  GRADE_PRIMARY_2
+  GRADE_PRIMARY_3
+  GRADE_PRIMARY_4
+  GRADE_PRIMARY_5
+  GRADE_PRIMARY_6
+  GRADE_SECONDARY_1
+  GRADE_SECONDARY_2
+  GRADE_SECONDARY_3
+  GRADE_SECONDARY_4
+  GRADE_SECONDARY_5
+  GRADE_PRE_1
+  GRADE_PRE_2
+  GRADE_PRE_3
+  GRADE_PRE_4
 }
 
 enum Section {
@@ -44,7 +53,7 @@ enum Section {
 
 model Alumno {
   id             Int              @id @default(autoincrement())
-  dni            String
+  dni            String?          @unique
   fullName       String
   grade          Grade
   section        Section

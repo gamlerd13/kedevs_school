@@ -1,7 +1,13 @@
 import React from "react";
+import AlumnoList from "../alumno/AlumnoList";
 
-function page() {
-  return <div>Home</div>;
+function Page() {
+  return (
+    <div>
+      asdf
+      <AlumnoList />
+    </div>
+  );
 }
 
-export default page;
+export default Page;
