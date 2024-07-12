@@ -5,11 +5,6 @@ import { useRouter } from "next/navigation";
 import ButtonSubmit from "@/components/Button";
 import { signIn } from "next-auth/react";
 
-interface Form {
-  username: string;
-  password: string;
-}
-
 export default function LoginForm() {
   const router = useRouter();
 
@@ -27,7 +22,6 @@ export default function LoginForm() {
       return;
     }
 
-    console.log(formData);
     const res = await signIn("credentials", {
       username: username,
       password: password,

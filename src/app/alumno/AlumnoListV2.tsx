@@ -1,8 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { AlumnoList, gradeLabels, sectionLabels } from "@/models/alumno";
 import useAlumno from "./hooks/useAlumno";
-import { IoEye } from "react-icons/io5";
+import { IoEye, IoSearchCircleOutline } from "react-icons/io5";
+import { PiPlusCircleDuotone } from "react-icons/pi";
+
 import { FaEdit } from "react-icons/fa";
 import { TbTrashXFilled } from "react-icons/tb";
 import {
@@ -15,39 +17,52 @@ import {
   Tooltip,
   Pagination,
   Button,
+  Input,
 } from "@nextui-org/react";
+import { ModalCreateAlumnoContext } from "./page";
+
+function removeAccents(str: string) {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
 
 function AlumnoListV2() {
   const [page, setPage] = useState<number>(1);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [searchFilter, setSearchFilter] = useState<string>("");
   const { data: alumnos, isLoading } = useAlumno<AlumnoList>();
 
-  const rowsPerPage = 10;
+  // const rowsPerPage = 10;
   const pages = Math.ceil(alumnos.length / rowsPerPage);
 
   const items: AlumnoList[] = React.useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return alumnos.slice(start, end);
-  }, [page, alumnos]);
+    if (searchFilter.trim() !== "") {
+      const normalizedSearchFilter = removeAccents(
+        searchFilter.trim().toLowerCase(),
+      );
+      const filteredAlumnos = alumnos.filter((alumno) =>
+        removeAccents(alumno.fullName.toLowerCase()).includes(
+          normalizedSearchFilter,
+        ),
+      );
+      return filteredAlumnos.slice(start, end);
+    } else {
+      return alumnos.slice(start, end);
+    }
+  }, [page, alumnos, rowsPerPage, searchFilter]);
 
+  console.log("Actualizando en lista de alumnos", alumnos);
   return (
     <Table
       aria-label="Example table with client side pagination"
       bottomContent={
         <div className="flex w-full justify-center">
           <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant="flat"
-              color="default"
-              onPress={() => setPage((prev) => (prev > 1 ? prev - 1 : prev))}
-            >
-              Previous
-            </Button>
             <Pagination
               // isCompact
-              // showControls
+              showControls
               showShadow
               color="primary"
               page={page}
@@ -55,19 +70,15 @@ function AlumnoListV2() {
               onChange={(page) => setPage(page)}
               className="p-2"
             />
-            <Button
-              size="sm"
-              variant="flat"
-              color="default"
-              onPress={() =>
-                setPage((prev) => (prev < pages ? prev + 1 : prev))
-              }
-            >
-              Next
-            </Button>
           </div>
         </div>
       }
+      topContent={TopContentDataTable(
+        alumnos.length,
+        setRowsPerPage,
+        searchFilter,
+        setSearchFilter,
+      )}
       classNames={{
         wrapper: "min-h-[222px]",
       }}
@@ -133,5 +144,53 @@ function AlumnoListV2() {
     </Table>
   );
 }
+
+// #region Top Content DataTable
+const TopContentDataTable = (
+  alumnos: number,
+  setRowsPerPage: (row: number) => void,
+  searchFilter: string,
+  setSearchFilter: (value: string) => void,
+) => {
+  const onOpen = useContext(ModalCreateAlumnoContext);
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex justify-between gap-3 items-end">
+        <Input
+          isClearable
+          className="w-full sm:max-w-[44%]"
+          placeholder="Buscar por nombre ..."
+          startContent={<IoSearchCircleOutline />}
+          value={searchFilter}
+          // onClear={() => onClear(setSearchFilter)}
+          onValueChange={(e) => setSearchFilter(e)}
+        />
+        <Button
+          onPress={onOpen}
+          color="primary"
+          endContent={<PiPlusCircleDuotone />}
+        >
+          Agregar Alumno
+        </Button>
+      </div>
+      <div className="flex justify-between items-center">
+        <span className="text-default-400 text-small">
+          Total {alumnos} alumnos
+        </span>
+        <label className="flex items-center text-default-400 text-small">
+          Filas por pagina:
+          <select
+            className="bg-transparent outline-none text-default-400 text-small"
+            onChange={(e) => setRowsPerPage(Number(e.target.value))}
+          >
+            <option value="10">10</option>
+            <option value="5">5</option>
+            <option value="15">15</option>
+          </select>
+        </label>
+      </div>
+    </div>
+  );
+};
 
 export default AlumnoListV2;

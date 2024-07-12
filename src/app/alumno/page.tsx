@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { createContext } from "react";
 import AlumnoListV2 from "./AlumnoListV2";
 import CreateAlumnoForm from "./CreateAlumno";
 import NavBar from "@/components/NavBar";
@@ -8,11 +8,17 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  Button,
   useDisclosure,
 } from "@nextui-org/react";
-import Breadcrumb from "@/components/Breadcrumb";
+import TitlePage from "@/components/TitlePage";
+type ModalContextType = () => void;
 
+export const ModalCreateAlumnoContext = createContext<ModalContextType>(() => {
+  throw new Error("ModalCreateAlumnoContext not provided");
+});
+// export const ModalCreateAlumnoContext = createContext<ModalContextType>(() => {
+//   throw new Error("ModalCreateAlumnoContext not provided");
+// });
 function Page() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -21,25 +27,26 @@ function Page() {
       <div className="w-full">
         <NavBar />
         <div className="sm:w-10/12 w-11/12  mx-auto flex flex-col">
-          <Breadcrumb nav={["Alumnos"]} />
-          <div>
-            <Button onPress={onOpen}>Agregar Alumno</Button>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-              <ModalContent>
-                {(onClose) => (
-                  <>
-                    <ModalHeader className="flex flex-col gap-1">
-                      Agregar Alumno
-                    </ModalHeader>
-                    <ModalBody>
-                      <CreateAlumnoForm onClose={onClose} />
-                    </ModalBody>
-                  </>
-                )}
-              </ModalContent>
-            </Modal>
-          </div>
-          <AlumnoListV2 />
+          <TitlePage title="Alumnos" />
+          <ModalCreateAlumnoContext.Provider value={onOpen}>
+            <div>
+              <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+                <ModalContent>
+                  {(onClose) => (
+                    <>
+                      <ModalHeader className="flex flex-col gap-1">
+                        Agregar Alumno
+                      </ModalHeader>
+                      <ModalBody>
+                        <CreateAlumnoForm onClose={onClose} />
+                      </ModalBody>
+                    </>
+                  )}
+                </ModalContent>
+              </Modal>
+            </div>
+            <AlumnoListV2 />
+          </ModalCreateAlumnoContext.Provider>
         </div>
       </div>
     </>

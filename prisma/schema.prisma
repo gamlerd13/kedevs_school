@@ -52,13 +52,12 @@ enum Section {
 }
 
 model Alumno {
-  id             Int              @id @default(autoincrement())
-  dni            String?          @unique
-  fullName       String
-  grade          Grade
-  section        Section
-  payments       Payment[]
-  PaymentConcept PaymentConcept[]
+  id       Int       @id @default(autoincrement())
+  dni      String?   @unique
+  fullName String
+  grade    Grade
+  section  Section
+  payments Payment[]
 }
 
 enum PaymentMethod {
@@ -73,11 +72,9 @@ enum PaymentMethod {
 }
 
 model PaymentConcept {
-  id       Int     @id @default(autoincrement())
-  name     String
-  alumnoId Int?
-  alumno   Alumno? @relation(fields: [alumnoId], references: [id])
-  total    Decimal
+  id    Int     @id @default(autoincrement())
+  name  String
+  total Decimal
 }
 
 model Payment {

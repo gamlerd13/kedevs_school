@@ -7,8 +7,11 @@ import { Select, SelectItem } from "@nextui-org/select";
 import { gradeLabels, sectionLabels } from "@/models/alumno";
 import { FormData, FormErrors } from "@/models/alumno";
 import axios from "axios";
+import { toast } from "sonner";
+import useAlumno from "./hooks/useAlumno";
 
 function CreateAlumnoForm({ onClose }: { onClose: () => void }) {
+  const { addData } = useAlumno();
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
     dni: "",
@@ -42,13 +45,22 @@ function CreateAlumnoForm({ onClose }: { onClose: () => void }) {
       return;
     }
     console.log(formData);
-
     try {
-      const response = await axios.post("/api/alumno/", formData);
-      console.log(response);
+      await addData(formData);
     } catch (error) {
-      console.log(error);
+      console.error("Error al crear el alumno:", error);
     }
+
+    // try {
+    //   const response = await axios.post("/api/alumno/", formData);
+    //   if (response.statusText == "OK") {
+    //     toast.success("Alumno creado con éxito");
+    //     getData();
+    //   }
+    // } catch (error) {
+    //   toast.success("Hubo un error al crear Alumno");
+    //   console.log(error);
+    // }
 
     onClose();
   };

@@ -1,14 +1,9 @@
 import { NextAuthOptions } from "next-auth";
-// import { CredentialsProvider } from "next-auth/providers/credentials";
+// import { Credentials } from "next-auth/providers/credentials";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import bcrypt from "bcrypt";
+import { compare } from "bcrypt-ts";
 import prisma from "@/libs/db";
-
-interface Credentials {
-  username: string;
-  password: string;
-}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -18,7 +13,7 @@ export const authOptions: NextAuthOptions = {
         username: { label: "Username", type: "text", placeholder: "kedevs" },
         password: { label: "Password", type: "password", placeholder: "****" },
       },
-      async authorize(credentials: Credentials) {
+      async authorize(credentials) {
         if (!credentials || !credentials.username || !credentials.password) {
           return null;
         }
@@ -30,16 +25,14 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!userFound) return null;
-        console.log(credentials.password, userFound?.password);
-        const matchPassword = await bcrypt.compare(
+        const matchPassword = await compare(
           credentials.password,
-          userFound?.password,
+          userFound.password,
         );
 
-        // if (!matchPassword) throw new Error("password doesn't match");
         if (!matchPassword) return null;
         return {
-          id: userFound.id,
+          id: userFound.id.toString(),
           name: userFound.username,
         };
       },
