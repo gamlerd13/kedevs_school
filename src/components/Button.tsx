@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "@nextui-org/react";
+import PlusIcon from "./icons/xl/PlusIcon";
 
 interface ButtonSubmitProps {
   text?: string;
@@ -13,3 +14,15 @@ export default function ButtonSubmit({ text, action }: ButtonSubmitProps) {
     </Button>
   );
 }
+
+export const ButtonCreateInstance = ({
+  handleClick,
+}: {
+  handleClick: () => void;
+}) => {
+  return (
+    <Button onPress={handleClick} color="primary" endContent={<PlusIcon />}>
+      Agregar
+    </Button>
+  );
+};

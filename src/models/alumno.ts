@@ -8,18 +8,19 @@ export interface Alumno {
   section: string;
 }
 
+export type FormData = Omit<Alumno, "id">;
+
 export type AlumnoList = Omit<Alumno, "grade" | "section"> & {
   grade: Grade;
   section: Section;
 };
 
-// const eder: AlumnoList = {
-//   id: 1,
-//   dni: "dsafasdf",
-//   fullName: "sadf",
-//   grade: Grade.GARDEN_3,
-//   section: Section.A,
-// };
+const eder: AlumnoList = {
+  dni: "dsafasdf",
+  fullName: "sadf",
+  grade: Grade.GARDEN_3,
+  section: Section.A,
+};
 
 export const gradeLabels: { [key in Grade]: string } = {
   [Grade.GARDEN_3]: "Jardín 3 años",
@@ -49,7 +50,5 @@ export const sectionLabels: { [key in Section]: string } = {
   [Section.D]: "Sección D",
   [Section.E]: "Sección E",
 };
-
-export type FormData = Omit<Alumno, "id">;
 
 export type FormErrors = Partial<Alumno>;

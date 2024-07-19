@@ -4,7 +4,7 @@ import { Alumno } from "@prisma/client";
 
 export async function GET() {
   try {
-    const alumnos = await prisma.alumno.findMany(); // Consulta para obtener todos los registros de la tabla Alumno
+    const alumnos = await prisma.alumno.findMany();
     return NextResponse.json(alumnos);
   } catch (error) {
     console.error("Error fetching alumnos:", error);
@@ -30,5 +30,28 @@ export async function POST(req: NextRequest, res: NextResponse) {
   } catch (error) {
     console.error("Error create alumno:", error);
     return NextResponse.error();
+  }
+}
+
+export async function PUT(req: NextRequest, res: NextResponse) {
+  try {
+    const body: Alumno = await req.json();
+    const { id, ...data } = body;
+
+    const updateAlumno = await prisma.alumno.update({
+      where: {
+        id: id,
+      },
+      data: data,
+    });
+
+    if (!updateAlumno) {
+      throw new Error("No se pudo actualizar Alumno");
+    }
+    return NextResponse.json(updateAlumno, { status: 200 });
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Error desconocido";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

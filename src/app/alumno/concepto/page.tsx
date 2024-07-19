@@ -30,7 +30,6 @@ function Page() {
     onOpenEdit();
   };
 
-  console.log("Concepto de pago en la lista", conceptPayments);
   return (
     <>
       <div className="w-full">

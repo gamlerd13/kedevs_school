@@ -28,7 +28,7 @@ function removeAccents(str: string) {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
-function AlumnoListV2() {
+function AlumnoListComponent() {
   const { isOpen, onOpen, onOpenChange, onClose } = useContext(ModalContext);
   const { alumnos, addData, updateData } = useContext(UseAlumnoContext);
   const { handleOpenModal } = useContext(FormContext);
@@ -184,4 +184,4 @@ const TopContentDataTable = ({
   );
 };
 
-export default AlumnoListV2;
+export default AlumnoListComponent;

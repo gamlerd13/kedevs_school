@@ -39,12 +39,6 @@ function CreatePaymentConcept({
     };
   }
 
-  if (create) {
-    console.log("se va a crear");
-  } else {
-    console.log("se va a actualizar");
-  }
-
   const [formData, setFormData] =
     useState<FormDataPaymentConcept>(initialValueForm);
   const [errors, setErrors] = useState<FormErrorsPaymentConcept>({
@@ -131,7 +125,7 @@ function CreatePaymentConcept({
             Cerrar
           </Button>
           <Button color="default" type="submit">
-            Crear
+            Enviar
           </Button>
         </div>
       </div>

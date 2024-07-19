@@ -1,4 +1,4 @@
-import { FormData } from "@/models/alumno";
+import { FormData, Alumno } from "@/models/alumno";
 
 export interface DataFetch<T> {
   // data: T[] | null;
@@ -7,6 +7,7 @@ export interface DataFetch<T> {
   error: Error | null;
   getData: () => void;
   addData: (formData: FormData) => void;
+  updateData: (formData: Alumno) => void;
 }
 
 export type Credentials = {

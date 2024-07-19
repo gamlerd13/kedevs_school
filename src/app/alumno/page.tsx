@@ -1,52 +1,102 @@
 "use client";
-import React, { createContext } from "react";
+import React, { createContext, useState } from "react";
 import AlumnoListV2 from "./AlumnoListV2";
-import CreateAlumnoForm from "./CreateAlumno";
 import NavBar from "@/components/NavBar";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  useDisclosure,
-} from "@nextui-org/react";
+import { useDisclosure } from "@nextui-org/react";
 import TitlePage from "@/components/TitlePage";
-type ModalContextType = () => void;
+import { Alumno, AlumnoList, FormData } from "@/models/alumno";
+import ModalForm from "./ModalForm";
+import useAlumno from "./hooks/useAlumno";
 
-export const ModalCreateAlumnoContext = createContext<ModalContextType>(() => {
-  throw new Error("ModalCreateAlumnoContext not provided");
+interface ModalContext {
+  isOpen: boolean;
+  onOpen: () => void;
+  onOpenChange: () => void;
+  onClose: () => void;
+}
+
+const initialModalContext: ModalContext = {
+  isOpen: false,
+  onOpen: () => {},
+  onOpenChange: () => {},
+  onClose: () => {},
+};
+
+interface CreateEditProps {
+  isCreate: boolean;
+  formData: Alumno | null;
+}
+
+interface FormContextType {
+  isCreate: boolean;
+  initialValueForm: Alumno | null;
+  handleOpenModal: ({ isCreate, formData }: CreateEditProps) => void;
+}
+
+export const FormContext = createContext<FormContextType>({
+  isCreate: true,
+  initialValueForm: null,
+  handleOpenModal: () => {},
 });
-// export const ModalCreateAlumnoContext = createContext<ModalContextType>(() => {
-//   throw new Error("ModalCreateAlumnoContext not provided");
-// });
-function Page() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+export const ModalContext = createContext<ModalContext>(initialModalContext);
+
+interface UseAlumnoContext {
+  alumnos: AlumnoList[] | [];
+  addData: (formData: FormData) => void;
+  updateData: (formData: Alumno) => void;
+}
+
+export const UseAlumnoContext = createContext<UseAlumnoContext>({
+  alumnos: [],
+  addData: (formData: FormData) => {},
+  updateData: () => {},
+});
+
+function Page() {
+  const { data: alumnos, addData, updateData } = useAlumno<AlumnoList>();
+
+  const [isCreate, setIsCreate] = useState<boolean>(true);
+  const [initialValueForm, setInitialValueForm] = useState<Alumno | null>(null);
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+
+  const onCloseModal = () => {
+    setInitialValueForm(null);
+    onClose();
+  };
+
+  const handleOpenModal = ({ isCreate, formData }: CreateEditProps) => {
+    console.log(isCreate, formData);
+    if (isCreate && !formData) {
+      setIsCreate(true);
+      setInitialValueForm(null);
+    }
+    if (!isCreate && formData) {
+      setIsCreate(false);
+      setInitialValueForm(formData);
+    }
+    onOpen();
+  };
   return (
     <>
       <div className="w-full">
         <NavBar />
         <div className="sm:w-10/12 w-11/12  mx-auto flex flex-col">
           <TitlePage title="Alumnos" />
-          <ModalCreateAlumnoContext.Provider value={onOpen}>
-            <div>
-              <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-                <ModalContent>
-                  {(onClose) => (
-                    <>
-                      <ModalHeader className="flex flex-col gap-1">
-                        Agregar Alumno
-                      </ModalHeader>
-                      <ModalBody>
-                        <CreateAlumnoForm onClose={onClose} />
-                      </ModalBody>
-                    </>
-                  )}
-                </ModalContent>
-              </Modal>
-            </div>
-            <AlumnoListV2 />
-          </ModalCreateAlumnoContext.Provider>
+          <ModalContext.Provider
+            value={{ isOpen, onOpen, onOpenChange, onClose }}
+          >
+            <FormContext.Provider
+              value={{ isCreate, initialValueForm, handleOpenModal }}
+            >
+              <UseAlumnoContext.Provider
+                value={{ alumnos, addData, updateData }}
+              >
+                <AlumnoListV2 />
+                <ModalForm />
+              </UseAlumnoContext.Provider>
+            </FormContext.Provider>
+          </ModalContext.Provider>
         </div>
       </div>
     </>
