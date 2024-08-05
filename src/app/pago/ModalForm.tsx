@@ -1,6 +1,6 @@
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@nextui-org/modal";
 import React, { useContext } from "react";
-import CreateAlumnoForm from "./CreateAlumno";
+import CreatePayment from "./CreatePayment";
 import { ModalContext, UseAlumnoContext } from "./page";
 
 function ModalForm() {
@@ -14,7 +14,7 @@ function ModalForm() {
           <>
             <ModalHeader className="flex flex-col gap-1">Pago</ModalHeader>
             <ModalBody>
-              <CreateAlumnoForm addData={addData} updateData={updateData} />
+              <CreatePayment addData={addData} updateData={updateData} />
             </ModalBody>
           </>
         )}

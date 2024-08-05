@@ -6,7 +6,8 @@ import { useDisclosure } from "@nextui-org/react";
 import TitlePage from "@/components/TitlePage";
 import { Alumno, AlumnoList, FormData } from "@/models/alumno";
 import ModalForm from "./ModalForm";
-import useAlumno from "./hooks/useAlumno";
+import useAlumnoPayment from "./hooks/useAlumnoPayment";
+import { AlumnoPayment, Payment } from "@/models/payment";
 
 interface ModalContext {
   isOpen: boolean;
@@ -24,70 +25,73 @@ const initialModalContext: ModalContext = {
 
 interface CreateEditProps {
   isCreate: boolean;
-  formData: Alumno | null;
+  idAlumno: number | null;
 }
 
 interface FormContextType {
   isCreate: boolean;
-  initialValueForm: Alumno | null;
-  handleOpenModal: ({ isCreate, formData }: CreateEditProps) => void;
+  idAlumno: number | null;
+  handleOpenModal: ({ isCreate, idAlumno }: CreateEditProps) => void;
 }
 
 export const FormContext = createContext<FormContextType>({
   isCreate: true,
-  initialValueForm: null,
+  idAlumno: null,
   handleOpenModal: () => {},
 });
 
 export const ModalContext = createContext<ModalContext>(initialModalContext);
 
 interface UseAlumnoContext {
-  alumnos: AlumnoList[] | [];
-  addData: (formData: FormData) => void;
+  alumnos: AlumnoPayment[] | [];
+  addData: (formData: Payment) => void;
   updateData: (formData: Alumno) => void;
 }
 
 export const UseAlumnoContext = createContext<UseAlumnoContext>({
   alumnos: [],
-  addData: (formData: FormData) => {},
+  addData: (formData: Payment) => {},
   updateData: () => {},
 });
 
 function Page() {
-  const { data: alumnos, addData, updateData } = useAlumno<AlumnoList>();
+  const {
+    data: alumnos,
+    addData,
+    updateData,
+  } = useAlumnoPayment<AlumnoPayment>();
 
   const [isCreate, setIsCreate] = useState<boolean>(true);
-  const [initialValueForm, setInitialValueForm] = useState<Alumno | null>(null);
+  const [idAlumno, setIdAlumno] = useState<number | null>(null);
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-  const onCloseModal = () => {
-    setInitialValueForm(null);
-    onClose();
-  };
-
-  const handleOpenModal = ({ isCreate, formData }: CreateEditProps) => {
-    console.log(isCreate, formData);
-    if (isCreate && !formData) {
+  const handleOpenModal = ({
+    isCreate,
+    idAlumno,
+  }: {
+    isCreate: boolean;
+    idAlumno: number | null;
+  }) => {
+    if (isCreate && idAlumno) {
       setIsCreate(true);
-      setInitialValueForm(null);
+      setIdAlumno(idAlumno);
     }
-    if (!isCreate && formData) {
+    if (!isCreate) {
       setIsCreate(false);
-      setInitialValueForm(formData);
+      // setIdAlumno();
     }
     onOpen();
   };
   return (
     <>
       <div className="w-full">
-        <NavBar />
         <div className="sm:w-10/12 w-11/12  mx-auto flex flex-col">
           <TitlePage title="Pagos" />
           <ModalContext.Provider
             value={{ isOpen, onOpen, onOpenChange, onClose }}
           >
             <FormContext.Provider
-              value={{ isCreate, initialValueForm, handleOpenModal }}
+              value={{ isCreate, idAlumno, handleOpenModal }}
             >
               <UseAlumnoContext.Provider
                 value={{ alumnos, addData, updateData }}

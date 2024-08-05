@@ -72,16 +72,27 @@ enum PaymentMethod {
 }
 
 model PaymentConcept {
-  id    Int     @id @default(autoincrement())
-  name  String
-  total Decimal
+  id       Int       @id @default(autoincrement())
+  name     String
+  total    Decimal
+  payments Payment[]
 }
 
 model Payment {
-  id            Int           @id @default(autoincrement())
-  alumnoId      Int
-  alumno        Alumno        @relation(fields: [alumnoId], references: [id])
-  paymentMethod PaymentMethod @default(YAPE)
-  datePayment   DateTime      @default(now())
-  total         Decimal
+  id               Int            @id @default(autoincrement())
+  alumnoId         Int
+  alumno           Alumno         @relation(fields: [alumnoId], references: [id])
+  paymentConceptId Int
+  paymentConcept   PaymentConcept @relation(fields: [paymentConceptId], references: [id])
+  paymentMethod    PaymentMethod  @default(YAPE)
+  datePayment      DateTime       @default(now())
+  total            Decimal
+
+  @@unique([alumnoId, paymentConceptId]) // Esta línea asegura que cada alumno sólo puede tener un pago por concepto de pago
+}
+
+model Year {
+  id        Int     @id @default(autoincrement())
+  year      Int     @unique
+  isDefault Boolean @default(false)
 }

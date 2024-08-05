@@ -11,3 +11,7 @@ content-type: application/json
 ###
 GET http://localhost:3000/api/alumnoLastPayment
 Content-Type: application/json
+
+###
+GET http://localhost:3000/api/alumno/12
+Content-Type: application/json

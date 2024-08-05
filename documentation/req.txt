@@ -18,3 +18,13 @@ Módulo de pago (2 días)
     Fecha
     Relación alumno
 Configuración de Hosting y Servidor (3 días)
+
+
+
+
+Notes:
+
+30/07/2024
+
+-Agregar field observaciones in pagos
+-

@@ -1,22 +1,30 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { DataFetch } from "@/models/main";
 import { Alumno } from "@/models/alumno";
 import { toast } from "sonner";
 
-import { FormData } from "@/models/alumno";
+import { Payment } from "@/models/payment";
 
-export default function useAlumno<T>(): DataFetch<T> {
+export interface DataFetch<T> {
+  // data: T[] | null;
+  data: T[];
+  isLoading: Boolean;
+  error: Error | null;
+  getData: () => void;
+  addData: (formData: Payment) => void;
+  updateData: (formData: Alumno) => void;
+}
+
+export default function useAlumnoPayment<T>(): DataFetch<T> {
   const [data, setData] = useState<T[]>([]);
 
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-  const [update, setUpdate] = useState<boolean>(false);
 
   const getData = async () => {
     try {
-      const res = await axios.get("/api/alumno");
+      const res = await axios.get("/api/alumnoLastPayment");
       if (res.status === 200) {
         console.log("dentro del status 2000", res);
 
@@ -31,11 +39,11 @@ export default function useAlumno<T>(): DataFetch<T> {
     }
   };
 
-  const addData = async (formData: FormData) => {
+  const addData = async (formData: Payment) => {
     try {
-      const response = await axios.post("/api/alumno/", formData);
-      if (response.statusText == "OK") {
-        toast.success("Alumno creado con éxito");
+      const response = await axios.post("/api/alumnoLastPayment/", formData);
+      if (response.status == 201) {
+        toast.success("Pago realizado Exitosamente");
         getData();
       }
     } catch (error) {

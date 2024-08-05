@@ -6,8 +6,8 @@ import {
   gradeLabels,
   sectionLabels,
 } from "@/models/alumno";
-import useAlumno from "./hooks/useAlumno";
-import { FaEdit } from "react-icons/fa";
+import useAlumno from "./hooks/useAlumnoPayment";
+import { FaMoneyBillWave } from "react-icons/fa";
 
 import {
   Table,
@@ -17,12 +17,17 @@ import {
   TableRow,
   TableCell,
   Pagination,
+  Chip,
+  Button,
 } from "@nextui-org/react";
+import { Badge } from "@nextui-org/badge";
 import { FormContext, ModalContext, UseAlumnoContext } from "./page";
 import { ButtonCreateInstance } from "@/components/Button";
 import { InputSearch } from "@/components/InputSearch";
 import { ToolTipEdit } from "@/components/ToolTip";
 import ModalForm from "./ModalForm";
+import { AlumnoPayment } from "@/models/payment";
+import Link from "next/link";
 
 function removeAccents(str: string) {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -43,7 +48,7 @@ function AlumnoListComponent() {
   // const rowsPerPage = 10;
   const pages = Math.ceil(alumnos.length / rowsPerPage);
 
-  const items: AlumnoList[] = React.useMemo(() => {
+  const items: AlumnoPayment[] = React.useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
@@ -94,39 +99,64 @@ function AlumnoListComponent() {
       >
         <TableHeader>
           <TableColumn>N°</TableColumn>
-          <TableColumn>Nombre Completo</TableColumn>
-          <TableColumn>DNI</TableColumn>
-          <TableColumn>Grado y Sección</TableColumn>
+          <TableColumn>Datos</TableColumn>
+          {/* <TableColumn>Grado y Sección</TableColumn> */}
+          <TableColumn>Último Pago</TableColumn>
           <TableColumn>Acciones</TableColumn>
         </TableHeader>
         <TableBody items={items}>
           {(alumno) => (
             <TableRow key={alumno.id}>
               <TableCell>{alumno.id}</TableCell>
-              <TableCell>{alumno.fullName}</TableCell>
-              <TableCell>{alumno.dni}</TableCell>
               <TableCell>
-                {gradeLabels[alumno.grade]} - {sectionLabels[alumno.section]}
+                <div className="list-disc list-inside font-medium">
+                  {alumno.fullName}
+                </div>
+                <div className="list-disc list-inside text-blue-700">
+                  {alumno.dni}
+                </div>
               </TableCell>
               <TableCell>
-                <div className="relative flex items-center gap-2">
-                  <button
+                {alumno.payments.length ? (
+                  <div className="flex flex-col">
+                    <span>{alumno.payments[0]?.paymentConcept.name}</span>
+                    <Chip color="success" size="sm">
+                      {`s/. ${alumno.payments[0]?.total}`}
+                    </Chip>
+                  </div>
+                ) : (
+                  <Chip color="danger" size="sm" variant="bordered">
+                    --
+                  </Chip>
+                )}
+              </TableCell>
+              {/* <TableCell>
+                {gradeLabels[alumno.grade]} - {sectionLabels[alumno.section]}
+              </TableCell> */}
+              <TableCell>
+                <div className="text-md mobile:flex">
+                  <Button
                     type="button"
+                    className="flex bg-green-700 text-white p-0"
                     onClick={() =>
                       handleOpenModal({
-                        isCreate: false,
-                        formData: {
-                          id: alumno.id,
-                          fullName: alumno.fullName,
-                          dni: alumno.dni,
-                          grade: alumno.grade,
-                          section: alumno.section,
-                        },
+                        isCreate: true,
+                        idAlumno: alumno.id,
                       })
                     }
                   >
-                    <ToolTipEdit name={alumno.fullName} />
-                  </button>
+                    <FaMoneyBillWave />
+                    Pagar
+                  </Button>
+                  <Link href={`/pago/alumno/${alumno.id}`}>
+                    <Button
+                      type="button"
+                      className="flex"
+                      onClick={() => console.log("Ir a detalles")}
+                    >
+                      Detalles
+                    </Button>
+                  </Link>
                 </div>
               </TableCell>
             </TableRow>
@@ -160,7 +190,7 @@ const TopContentDataTable = ({
         <InputSearch value={searchFilter} setValue={setSearchFilter} />
         <ButtonCreateInstance
           handleClick={() =>
-            handleOpenModal({ isCreate: true, formData: null })
+            handleOpenModal({ isCreate: true, idAlumno: null })
           }
         />
       </div>

@@ -1,24 +1,62 @@
 // export { default } from "next-auth/middleware";
-
+import { NextFetchEvent, NextResponse, type NextRequest } from "next/server";
 import { withAuth } from "next-auth/middleware";
-export default withAuth({
+import prisma from "./libs/db";
+
+// Middleware de año
+export async function yearMiddleware(request: NextRequest) {
+  const url = request.nextUrl;
+  const year = url.searchParams.get("year");
+
+  let yearData;
+
+  if (year) {
+    yearData = await prisma.year.findUnique({
+      where: { year: parseInt(year) },
+    });
+  } else {
+    yearData = await prisma.year.findFirst({
+      where: { isDefault: true },
+    });
+  }
+
+  if (!yearData) {
+    return NextResponse.json({ error: "Year not found" }, { status: 404 });
+  }
+
+  // Agregar el año a las cabeceras para su uso en los handlers
+  const response = NextResponse.next();
+  response.headers.set("X-Year", yearData.year.toString());
+  return response;
+}
+
+const authMiddleware = withAuth({
   callbacks: {
     async authorized({ req, token }) {
-      // Si el token existe, permite la solicitud
       if (token) return true;
 
-      // Permitir acceso anónimo a rutas específicas
-      const publicPaths = ["/api/alumnoLastPayment"];
+      const publicPaths = [/^\/api\/alumnoLastPayment$/, /^\/api\/alumno\/.*$/];
       const path = req.nextUrl.pathname;
 
-      return publicPaths.includes(path);
+      return publicPaths.some((publicPath) => publicPath.test(path));
     },
   },
 });
 
+// Encadenar middlewares
+export async function middleware(request: NextRequest, event: NextFetchEvent) {
+  // Ejecutar el middleware de autenticación primero
+  const authResponse = await authMiddleware(request, event);
+
+  // Si la autenticación falla, retornar la respuesta de autenticación
+  if (authResponse?.status !== 200) {
+    return authResponse;
+  }
+
+  // Ejecutar el middleware de año después de la autenticación
+  return yearMiddleware(request);
+}
+
 export const config = {
-  // matcher: ["/home/:path*", "/cursos/:path*"], //Proteger todas las rutas despues de
-  // matcher: ["/((?!auth/).*)"], //Proteger todo menos login
-  // matcher: ["/((?!auth/login).*)"],
   matcher: ["/((?!api/auth|auth/login|logo.png).*)"], // Proteger todas las rutas excepto las rutas de autenticación y la de login
 };
