@@ -42,25 +42,3 @@ export async function GET(req: NextRequest) {
     return handlePrismaError(error);
   }
 }
-
-export async function POST(req: NextRequest, res: NextResponse) {
-  try {
-    const body: PaymentPost = await req.json();
-    const { alumnoId, paymentConceptId, paymentMethod, total } = body;
-
-    const newPayment = await prisma.payment.create({
-      data: {
-        alumnoId,
-        paymentConceptId,
-        paymentMethod,
-        total,
-      },
-    });
-    if (!newPayment) {
-      throw new Error("No se pudo crear el pago");
-    }
-    return NextResponse.json(newPayment, { status: 201 });
-  } catch (error) {
-    return handlePrismaError(error);
-  }
-}

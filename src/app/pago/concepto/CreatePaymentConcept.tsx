@@ -11,7 +11,7 @@ import {
 } from "@/models/payment";
 import axios from "axios";
 import { toast } from "sonner";
-import { usePaymentConcept } from "./hooks/usePayment";
+import { usePaymentConcept } from "./hooks/usePaymentConcept";
 import { PaymentConcept } from "@/models/payment";
 
 function CreatePaymentConcept({

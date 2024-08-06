@@ -141,7 +141,7 @@ function AlumnoListComponent() {
                     onClick={() =>
                       handleOpenModal({
                         isCreate: true,
-                        idAlumno: alumno.id,
+                        alumno: alumno,
                       })
                     }
                   >
@@ -182,17 +182,10 @@ const TopContentDataTable = ({
   searchFilter,
   setSearchFilter,
 }: TopContentDataTable) => {
-  const { handleOpenModal } = useContext(FormContext);
-
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between gap-3 items-end">
         <InputSearch value={searchFilter} setValue={setSearchFilter} />
-        <ButtonCreateInstance
-          handleClick={() =>
-            handleOpenModal({ isCreate: true, idAlumno: null })
-          }
-        />
       </div>
       <div className="flex justify-between items-center">
         <span className="text-default-400 text-small">

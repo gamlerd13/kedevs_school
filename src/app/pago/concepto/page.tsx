@@ -2,7 +2,7 @@
 import NavBar from "@/components/NavBar";
 import TitlePage from "@/components/TitlePage";
 import React, { useState } from "react";
-import { usePaymentConcept } from "./hooks/usePayment";
+import { usePaymentConcept } from "./hooks/usePaymentConcept";
 import ListPaymentConcept from "./ListPaymentConcept";
 import CreatePaymentConcept from "./CreatePaymentConcept";
 import { PaymentConcept } from "@/models/payment";

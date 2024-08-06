@@ -9,12 +9,16 @@ import Loading from "../../loading";
 
 import { gradeLabels, sectionLabels } from "@/models/alumno";
 import SubTitlePage from "@/components/SubTitlePage";
-import { usePaymentConcept } from "../../concepto/hooks/usePayment";
+import { usePaymentConcept } from "../../concepto/hooks/usePaymentConcept";
+import { usePayment } from "@/hooks/usePayment";
+import { useAlumnoPayment } from "./useAlumnoPayments";
+
 const Page = () => {
   const pathname = usePathname();
   const { id }: { id: string } = useParams();
   const [alumno, setAlumno] = useState<Alumno | null>(null);
   const { conceptPayments } = usePaymentConcept();
+  const { payments, getData: getAlumnoPayments } = useAlumnoPayment();
 
   useEffect(() => {
     if (id) {
@@ -25,12 +29,14 @@ const Page = () => {
         }
       };
       fetchAlumno();
+      getAlumnoPayments(parseInt(id));
     }
   }, [id]);
 
   if (!id) return;
   if (!alumno) return <Loading />;
-  console.log(alumno);
+  console.log(payments);
+  console.log(conceptPayments);
 
   return (
     <div className="w-full">

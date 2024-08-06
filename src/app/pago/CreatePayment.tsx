@@ -7,7 +7,7 @@ import { Select, SelectItem } from "@nextui-org/select";
 import { Alumno } from "@/models/alumno";
 import { FormContext, ModalContext } from "./page";
 import { Payment } from "@/models/payment";
-import { usePaymentConcept } from "./concepto/hooks/usePayment";
+import { usePaymentConcept } from "./concepto/hooks/usePaymentConcept";
 import { paymentMethods } from "@/models/payment";
 
 interface FormErrorsPayment {
@@ -23,18 +23,19 @@ interface CreateAlumnoFormProps {
 
 function CreatePayment({ addData, updateData }: CreateAlumnoFormProps) {
   const { conceptPayments } = usePaymentConcept();
-  const { idAlumno, isCreate } = useContext(FormContext);
+  const { alumno, isCreate } = useContext(FormContext);
   const { onClose } = useContext(ModalContext);
 
   let initialValuePayment: Payment = {
     total: "",
     paymentMethod: "",
     alumnoId: 0,
+    comment: "",
     paymentConceptId: 0,
   };
 
-  if (isCreate && idAlumno) {
-    initialValuePayment = { ...initialValuePayment, alumnoId: idAlumno };
+  if (isCreate && alumno?.id) {
+    initialValuePayment = { ...initialValuePayment, alumnoId: alumno.id };
   }
 
   const [formData, setFormData] = useState<Payment>(initialValuePayment);
@@ -54,9 +55,8 @@ function CreatePayment({ addData, updateData }: CreateAlumnoFormProps) {
       setErrors(newErrors);
       return;
     }
-    console.log(formData, isCreate, idAlumno);
-    if (isCreate && idAlumno) {
-      await addData({ ...formData, alumnoId: idAlumno });
+    if (isCreate && alumno?.id) {
+      await addData({ ...formData, alumnoId: alumno.id });
     } else {
       // await updateData({ ...formData, id: initialValueForm?.id });
     }
@@ -133,6 +133,15 @@ function CreatePayment({ addData, updateData }: CreateAlumnoFormProps) {
           label={`Total ${errors.total && "(Requerido)"}`}
           value={formData.total}
           onChange={(e) => setFormData({ ...formData, total: e.target.value })}
+        />
+        <Input
+          type="text"
+          name="comment"
+          label={`Comentario`}
+          value={formData.comment}
+          onChange={(e) =>
+            setFormData({ ...formData, comment: e.target.value })
+          }
         />
 
         <div className="flex gap-2 justify-end">

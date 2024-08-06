@@ -25,18 +25,18 @@ const initialModalContext: ModalContext = {
 
 interface CreateEditProps {
   isCreate: boolean;
-  idAlumno: number | null;
+  alumno: Alumno | null;
 }
 
 interface FormContextType {
   isCreate: boolean;
-  idAlumno: number | null;
-  handleOpenModal: ({ isCreate, idAlumno }: CreateEditProps) => void;
+  alumno: Alumno | null;
+  handleOpenModal: ({ isCreate, alumno }: CreateEditProps) => void;
 }
 
 export const FormContext = createContext<FormContextType>({
   isCreate: true,
-  idAlumno: null,
+  alumno: null,
   handleOpenModal: () => {},
 });
 
@@ -62,19 +62,19 @@ function Page() {
   } = useAlumnoPayment<AlumnoPayment>();
 
   const [isCreate, setIsCreate] = useState<boolean>(true);
-  const [idAlumno, setIdAlumno] = useState<number | null>(null);
+  const [alumno, setAlumno] = useState<Alumno | null>(null);
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
   const handleOpenModal = ({
     isCreate,
-    idAlumno,
+    alumno,
   }: {
     isCreate: boolean;
-    idAlumno: number | null;
+    alumno: Alumno | null;
   }) => {
-    if (isCreate && idAlumno) {
+    if (isCreate && alumno) {
       setIsCreate(true);
-      setIdAlumno(idAlumno);
+      setAlumno(alumno);
     }
     if (!isCreate) {
       setIsCreate(false);
@@ -90,9 +90,7 @@ function Page() {
           <ModalContext.Provider
             value={{ isOpen, onOpen, onOpenChange, onClose }}
           >
-            <FormContext.Provider
-              value={{ isCreate, idAlumno, handleOpenModal }}
-            >
+            <FormContext.Provider value={{ isCreate, alumno, handleOpenModal }}>
               <UseAlumnoContext.Provider
                 value={{ alumnos, addData, updateData }}
               >

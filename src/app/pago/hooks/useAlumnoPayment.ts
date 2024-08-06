@@ -26,8 +26,6 @@ export default function useAlumnoPayment<T>(): DataFetch<T> {
     try {
       const res = await axios.get("/api/alumnoLastPayment");
       if (res.status === 200) {
-        console.log("dentro del status 2000", res);
-
         setIsLoading(false);
         setData(res.data);
       }
@@ -41,7 +39,7 @@ export default function useAlumnoPayment<T>(): DataFetch<T> {
 
   const addData = async (formData: Payment) => {
     try {
-      const response = await axios.post("/api/alumnoLastPayment/", formData);
+      const response = await axios.post("/api/payment/", formData);
       if (response.status == 201) {
         toast.success("Pago realizado Exitosamente");
         getData();
@@ -53,7 +51,6 @@ export default function useAlumnoPayment<T>(): DataFetch<T> {
   };
 
   const updateData = async (formData: Alumno) => {
-    console.log("Se va a actializar datos", formData);
     try {
       const response = await axios.put("/api/alumno/", formData);
       if (response.status == 200) {

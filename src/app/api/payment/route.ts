@@ -4,23 +4,40 @@ import { PaymentPost } from "@/models/payment";
 import { PaymentConcept } from "@prisma/client";
 import handlePrismaError from "@/libs/responseApi/handlePrismaError";
 
+export async function GET(req: NextRequest) {
+  try {
+    const payments = await prisma.payment.findMany({
+      orderBy: {
+        datePayment: "desc",
+      },
+    });
+    if (!payments) {
+      throw new Error("No se pudo obtener los pagos");
+    }
+    return NextResponse.json(payments, { status: 200 });
+  } catch (error) {
+    return handlePrismaError(error);
+  }
+}
+
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const body: PaymentPost = await req.json();
-    const { alumnoId, paymentConceptId, total, paymentMethod } = body;
+    const { alumnoId, paymentConceptId, paymentMethod, total, comment } = body;
 
-    const newPaymentConcept = await prisma.payment.create({
+    const newPayment = await prisma.payment.create({
       data: {
         alumnoId,
         paymentConceptId,
-        total,
         paymentMethod,
+        total,
+        comment,
       },
     });
-    if (!newPaymentConcept) {
-      throw Error("Ocurrio un error");
+    if (!newPayment) {
+      throw new Error("No se pudo crear el pago");
     }
-    return NextResponse.json(newPaymentConcept, { status: 201 });
+    return NextResponse.json(newPayment, { status: 201 });
   } catch (error) {
     return handlePrismaError(error);
   }

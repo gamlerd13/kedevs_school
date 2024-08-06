@@ -4,7 +4,7 @@ import axios, { AxiosError } from "axios";
 import { DataFetch } from "@/models/main";
 import { Alumno } from "@/models/alumno";
 import { toast } from "sonner";
-import useAxiosErrorHandler from "@/app/hooks/handleAxiosError";
+import useAxiosErrorHandler from "@/hooks/handleAxiosError";
 
 import { FormData } from "@/models/alumno";
 

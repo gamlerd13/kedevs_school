@@ -5,6 +5,7 @@ export interface Payment {
   alumnoId: number;
   paymentConceptId: number;
   paymentMethod: string;
+  comment?: string;
   datePayment?: string; //check if that work with string or datetime
   total: string;
 }
@@ -14,6 +15,7 @@ export interface PaymentPost {
   paymentConceptId: number;
   paymentMethod: PaymentMethod;
   datePayment?: string;
+  comment?: string;
   total: string;
 }
 export interface PaymentConcept {
