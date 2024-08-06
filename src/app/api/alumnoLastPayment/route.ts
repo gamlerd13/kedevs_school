@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/libs/db";
-import { Payment } from "@/models/payment";
-import { getSession } from "next-auth/react";
+import { PaymentPost } from "@/models/payment";
+import handlePrismaError from "@/libs/responseApi/handlePrismaError";
 
 export async function GET(req: NextRequest) {
   try {
@@ -37,16 +37,15 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(alumnos);
+    return NextResponse.json(alumnos, { status: 200 });
   } catch (error) {
-    console.error("Error fetching data:", error);
-    return NextResponse.error();
+    return handlePrismaError(error);
   }
 }
 
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
-    const body: Payment = await req.json();
+    const body: PaymentPost = await req.json();
     const { alumnoId, paymentConceptId, paymentMethod, total } = body;
 
     const newPayment = await prisma.payment.create({
@@ -58,13 +57,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
     });
     if (!newPayment) {
-      console.log("va  a haber un error");
       throw new Error("No se pudo crear el pago");
     }
     return NextResponse.json(newPayment, { status: 201 });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Error desconocido";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return handlePrismaError(error);
   }
 }

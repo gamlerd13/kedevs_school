@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/libs/db";
 import { Year } from "@prisma/client";
+import handlePrismaError from "@/libs/responseApi/handlePrismaError";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
@@ -23,8 +24,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     return NextResponse.json(transaction, { status: 201 });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Error desconocido";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return handlePrismaError(error);
   }
 }

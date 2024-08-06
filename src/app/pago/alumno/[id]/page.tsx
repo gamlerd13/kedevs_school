@@ -20,7 +20,7 @@ const Page = () => {
     if (id) {
       const fetchAlumno = async () => {
         const res = await axios.get(`/api/alumno/${id}`);
-        if (res.status === 201) {
+        if (res.status === 200) {
           setAlumno(res.data);
         }
       };

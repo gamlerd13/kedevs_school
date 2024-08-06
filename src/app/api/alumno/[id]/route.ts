@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/libs/db";
-import { Alumno } from "@prisma/client";
+import handlePrismaError from "@/libs/responseApi/handlePrismaError";
 
 interface Params {
   params: { id: string };
@@ -13,9 +13,9 @@ export async function GET(req: NextRequest, { params }: Params) {
         id: parseInt(params.id),
       },
     });
-    return NextResponse.json(alumnos, { status: 201 });
+    if (!alumnos) throw Error("Error al obtener alumno");
+    return NextResponse.json(alumnos, { status: 200 });
   } catch (error) {
-    console.error("Error fetching alumno:", error);
-    return NextResponse.error();
+    return handlePrismaError(error);
   }
 }

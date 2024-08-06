@@ -1,16 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { NextApiRequest } from "next";
 import prisma from "@/libs/db";
 import { FormDataPaymentConcept } from "@/models/payment";
+import handlePrismaError from "@/libs/responseApi/handlePrismaError";
 
 export async function PUT(req: NextRequest, res: NextResponse) {
   try {
-    // throw new Error("Error forzado para pruebas");
     const body: FormDataPaymentConcept = await req.json();
     const { name, total } = body;
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
-    if (!id) throw new Error("No hay Id");
+    if (!id) throw new Error("No existe Id de concepto de pago");
 
     const updatedPaymentConcept = await prisma.paymentConcept.update({
       where: {
@@ -28,8 +27,6 @@ export async function PUT(req: NextRequest, res: NextResponse) {
     }
     return NextResponse.json(updatedPaymentConcept, { status: 200 });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Error desconocido";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return handlePrismaError(error);
   }
 }

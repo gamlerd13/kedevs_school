@@ -1,11 +1,19 @@
 import { Alumno } from "./alumno";
-
+import { PaymentMethod } from "@prisma/client";
 export interface Payment {
   id?: number;
   alumnoId: number;
   paymentConceptId: number;
   paymentMethod: string;
   datePayment?: string; //check if that work with string or datetime
+  total: string;
+}
+
+export interface PaymentPost {
+  alumnoId: number;
+  paymentConceptId: number;
+  paymentMethod: PaymentMethod;
+  datePayment?: string;
   total: string;
 }
 export interface PaymentConcept {

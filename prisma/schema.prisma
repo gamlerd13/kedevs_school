@@ -86,6 +86,7 @@ model Payment {
   paymentConcept   PaymentConcept @relation(fields: [paymentConceptId], references: [id])
   paymentMethod    PaymentMethod  @default(YAPE)
   datePayment      DateTime       @default(now())
+  comment          String?
   total            Decimal
 
   @@unique([alumnoId, paymentConceptId]) // Esta línea asegura que cada alumno sólo puede tener un pago por concepto de pago

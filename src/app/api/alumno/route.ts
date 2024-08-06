@@ -1,21 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/libs/db";
-import { Alumno } from "@prisma/client";
+import { Alumno, Prisma } from "@prisma/client";
+import handlePrismaError from "@/libs/responseApi/handlePrismaError";
 
 export async function GET() {
   try {
-    const alumnos = await prisma.alumno.findMany();
-    return NextResponse.json(alumnos);
+    const alumnos = await prisma.alumno.findMany({
+      orderBy: {
+        id: "desc",
+      },
+    });
+    return NextResponse.json(alumnos, { status: 200 });
   } catch (error) {
-    console.error("Error fetching alumnos:", error);
-    return NextResponse.error();
+    return handlePrismaError(error);
   }
 }
 
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const body: Alumno = await req.json();
-    console.log("este es el metodo post de alumno; ", body);
     const { fullName, dni, grade, section } = body;
 
     const newAlumno = await prisma.alumno.create({
@@ -26,10 +29,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
         section: section,
       },
     });
-    return NextResponse.json(newAlumno, { status: 200 });
+    return NextResponse.json(newAlumno, { status: 201 });
   } catch (error) {
-    console.error("Error create alumno:", error);
-    return NextResponse.error();
+    return handlePrismaError(error);
   }
 }
 
@@ -50,8 +52,6 @@ export async function PUT(req: NextRequest, res: NextResponse) {
     }
     return NextResponse.json(updateAlumno, { status: 200 });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Error desconocido";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return handlePrismaError(error);
   }
 }
