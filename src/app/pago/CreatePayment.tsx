@@ -2,17 +2,20 @@
 import { useState, FormEvent, useContext } from "react";
 import { FormData, FormErrors } from "@/models/alumno";
 
-import { Button, Input } from "@nextui-org/react";
+import { Button, DateValue, Input } from "@nextui-org/react";
 import { Select, SelectItem } from "@nextui-org/select";
 import { Alumno } from "@/models/alumno";
 import { FormContext, ModalContext } from "./page";
 import { Payment } from "@/models/payment";
 import { usePaymentConcept } from "./concepto/hooks/usePaymentConcept";
 import { paymentMethods } from "@/models/payment";
+import { DatePicker } from "@nextui-org/react";
+import { CalendarDate, parseDate } from "@internationalized/date";
 
 interface FormErrorsPayment {
   paymentConceptId: string;
   paymentMethod: string;
+  codePayment: string;
   total: string;
 }
 
@@ -22,6 +25,11 @@ interface CreateAlumnoFormProps {
 }
 
 function CreatePayment({ addData, updateData }: CreateAlumnoFormProps) {
+  const today = new Date();
+  const todayDateValue: CalendarDate = parseDate(
+    today.toISOString().split("T")[0],
+  );
+
   const { conceptPayments } = usePaymentConcept();
   const { alumno, isCreate } = useContext(FormContext);
   const { onClose } = useContext(ModalContext);
@@ -30,6 +38,8 @@ function CreatePayment({ addData, updateData }: CreateAlumnoFormProps) {
     total: "",
     paymentMethod: "",
     alumnoId: 0,
+    codePayment: "",
+    datePayment: today.toISOString(),
     comment: "",
     paymentConceptId: 0,
   };
@@ -39,10 +49,12 @@ function CreatePayment({ addData, updateData }: CreateAlumnoFormProps) {
   }
 
   const [formData, setFormData] = useState<Payment>(initialValuePayment);
+  const [todayCalendar, setTodayCalendar] = useState<DateValue>(todayDateValue);
 
   const [errors, setErrors] = useState<FormErrorsPayment>({
     paymentConceptId: "",
     paymentMethod: "",
+    codePayment: "",
     total: "",
   });
 
@@ -65,9 +77,10 @@ function CreatePayment({ addData, updateData }: CreateAlumnoFormProps) {
   };
 
   const validateForm = () => {
-    const newErrors = {
+    const newErrors: FormErrorsPayment = {
       paymentConceptId: "",
       paymentMethod: "",
+      codePayment: "",
       total: "",
     };
 
@@ -77,10 +90,12 @@ function CreatePayment({ addData, updateData }: CreateAlumnoFormProps) {
     if (formData.paymentMethod === "") {
       newErrors.paymentMethod = "Método de pago es requerido";
     }
+    if (formData.codePayment === "") {
+      newErrors.codePayment = "Código es requerido";
+    }
     if (formData.total === "") {
       newErrors.total = "Total es requerida";
     }
-
     return newErrors;
   };
 
@@ -127,13 +142,41 @@ function CreatePayment({ addData, updateData }: CreateAlumnoFormProps) {
           </Select>
         </div>
 
-        <Input
-          type="number"
-          name="total"
-          label={`Total ${errors.total && "(Requerido)"}`}
-          value={formData.total}
-          onChange={(e) => setFormData({ ...formData, total: e.target.value })}
+        <div className="w-full flex gap-2">
+          <Input
+            type="number"
+            name="total"
+            label={`Total ${errors.total && "(Requerido)"}`}
+            value={formData.total}
+            onChange={(e) =>
+              setFormData({ ...formData, total: e.target.value })
+            }
+          />
+          <Input
+            type="text"
+            name="codePayment"
+            label={`Código ${errors.codePayment && "(Requerido)"}`}
+            value={formData.codePayment}
+            onChange={(e) =>
+              setFormData({ ...formData, codePayment: e.target.value })
+            }
+          />
+        </div>
+
+        <DatePicker
+          label="Fecha de pago"
+          value={todayCalendar}
+          name="datePayment"
+          onChange={(date) => {
+            setTodayCalendar(date);
+            setFormData({
+              ...formData,
+              datePayment: new Date(date.toString()).toISOString(),
+            });
+          }}
+          className="w-full"
         />
+
         <Input
           type="text"
           name="comment"

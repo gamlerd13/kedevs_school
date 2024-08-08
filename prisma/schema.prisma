@@ -86,6 +86,7 @@ model Payment {
   paymentConcept   PaymentConcept @relation(fields: [paymentConceptId], references: [id])
   paymentMethod    PaymentMethod  @default(YAPE)
   datePayment      DateTime       @default(now())
+  codePayment      String
   comment          String?
   total            Decimal
 

@@ -5,6 +5,7 @@ import { Alumno } from "@/models/alumno";
 import { toast } from "sonner";
 
 import { Payment } from "@/models/payment";
+import useAxiosErrorHandler from "@/hooks/handleAxiosError";
 
 export interface DataFetch<T> {
   // data: T[] | null;
@@ -22,6 +23,8 @@ export default function useAlumnoPayment<T>(): DataFetch<T> {
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
+  const { handleAxiosError } = useAxiosErrorHandler();
+
   const getData = async () => {
     try {
       const res = await axios.get("/api/alumnoLastPayment");
@@ -33,7 +36,6 @@ export default function useAlumnoPayment<T>(): DataFetch<T> {
     } catch (error) {
       setIsLoading(false);
       setError(error as Error);
-      console.log("Eder hay un error!", error);
     }
   };
 
@@ -45,8 +47,8 @@ export default function useAlumnoPayment<T>(): DataFetch<T> {
         getData();
       }
     } catch (error) {
-      toast.success("Hubo un error al crear Alumno");
-      console.log(error);
+      handleAxiosError(error, "Pagos", "Crear");
+      // toast.success("Hubo un error al Pagar");
     }
   };
 
@@ -59,7 +61,6 @@ export default function useAlumnoPayment<T>(): DataFetch<T> {
       }
     } catch (error) {
       toast.success("Hubo un error al actualizar Alumno");
-      console.log(error);
     }
   };
 
