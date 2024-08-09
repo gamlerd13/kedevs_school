@@ -1,88 +1,93 @@
-"use client";
-import Image from "next/image";
-import { Button, ButtonGroup } from "@nextui-org/button";
 import NavBar from "@/components/NavBar";
-import Boleta from "@/components/Boleta";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 
-import {
-  Br,
-  Cut,
-  Line,
-  Printer,
-  Text,
-  Row,
-  render,
-} from "react-thermal-printer";
-const receipt = (
-  <Printer type="epson" width={42} characterSet="korea">
-    <Text size={{ width: 2, height: 2 }}>9,500원</Text>
-    <Text bold={true}>결제 완료</Text>
-    <Br />
-    <Line />
-    <Row left="결제방법" right="체크카드" />
-    <Row left="카드번호" right="123456**********" />
-    <Row left="할부기간" right="일시불" />
-    <Row left="결제금액" right="9,500" />
-    <Row left="부가세액" right="863" />
-    <Row left="공급가액" right="8,637" />
-    <Line />
-    <Row left="맛있는 옥수수수염차 X 2" right="11,000" />
-    <Text>옵션1(500)/옵션2/메모</Text>
-    <Row left="(-) 할인" right="- 500" />
-    <Br />
-    <Line />
-    <Row left="합계" right="9,500" />
-    <Row left="(-) 할인 2%" right="- 1,000" />
-    <Line />
-    <Row left="대표" right="김대표" />
-    <Row left="사업자등록번호" right="000-00-00000" />
-    <Row left="대표번호" right="0000-0000" />
-    <Row left="주소" right="어디시 어디구 어디동 몇동몇호" />
-    <Line />
-    <Br />
-    <Text align="center">Wifi: some-wifi / PW: 123123</Text>
-    <Cut />
-  </Printer>
-);
-
-export default function Home() {
-  const empresa = {
-    name: "Mi Empresa S.A.",
-    ruc: "12.345.678-9",
-  };
-
-  const pagador = "Juan Pérez";
-  const cantidad = "1000";
-  const total = "1000";
-  const fecha = "2 de octubre";
-
-  const handlePrint = async () => {
-    const data: Uint8Array = await render(receipt);
-    const port = await window.navigator.serial.requestPort();
-    await port.open({ baudRate: 9600 });
-
-    const writer = port.writable?.getWriter();
-    if (writer != null) {
-      await writer.write(data);
-      writer.releaseLock();
-    }
-  };
+function Page() {
   return (
     <>
       <NavBar />
-      <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        Boleta de ejemplo:
-        <Boleta
-          fecha={fecha}
-          empresa={empresa}
-          pagador={pagador}
-          cantidad={cantidad}
-          total={total}
-        />
-        <button type="button" onClick={handlePrint}>
-          Imprimir boleta
-        </button>
-      </main>
+      <div className="min-h-screen bg-beige flex flex-col items-center justify-center p-6">
+        <div className="max-w-4xl w-full bg-white shadow-md rounded-md overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2">
+            <div className="p-8">
+              <h1 className="text-3xl font-bold text-black mb-4">
+                Sistema de Gestión de Pagos para Colegios
+              </h1>
+              <p className="text-lg text-gray-700 mb-6">
+                Nuestro sistema permite gestionar eficientemente los pagos de
+                los estudiantes, facilitando el seguimiento de las cuotas y la
+                emisión de recibos de manera rápida y sencilla.
+              </p>
+              <p className="text-md text-gray-600 mb-6">
+                Desarrollado pensando en la administración escolar, este sistema
+                asegura que todas las transacciones sean seguras y estén
+                registradas de manera organizada.
+              </p>
+              <div className="flex items-center space-x-4">
+                <a href="https://instagram.com" className="text-gray-700">
+                  <i className="fab fa-instagram text-2xl"></i>
+                </a>
+                <a href="https://facebook.com" className="text-gray-700">
+                  <i className="fab fa-facebook text-2xl"></i>
+                </a>
+                <a href="https://linkedin.com" className="text-gray-700">
+                  <i className="fab fa-linkedin text-2xl"></i>
+                </a>
+              </div>
+            </div>
+            <div className="relative">
+              <Image
+                src="https://solucionesteknoclient.com/wp-content/uploads/2021/03/pago1-1024x812.png"
+                alt="Sistema de Gestión de Pagos"
+                layout="fill"
+                objectFit="cover"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-4xl w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-20">
+          <Link
+            href="/pago"
+            className="block bg-white shadow-md rounded-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
+          >
+            <h2 className="text-xl font-bold text-black mb-2">Pagos</h2>
+            <p className="text-gray-600">
+              Gestiona los pagos de los estudiantes
+            </p>
+          </Link>
+          <Link
+            href="/alumnos"
+            className="block bg-white shadow-md rounded-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
+          >
+            <h2 className="text-xl font-bold text-black mb-2">Alumnos</h2>
+            <p className="text-gray-600">
+              Administra la información de los alumnos
+            </p>
+          </Link>
+          <Link
+            href="/pago/concepto"
+            className="block bg-white shadow-md rounded-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
+          >
+            <h2 className="text-xl font-bold text-black mb-2">
+              Conceptos de Pago
+            </h2>
+            <p className="text-gray-600">
+              Define y gestiona los conceptos de pago
+            </p>
+          </Link>
+          <Link
+            href="/reportes"
+            className="block bg-white shadow-md rounded-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
+          >
+            <h2 className="text-xl font-bold text-black mb-2">Reportes</h2>
+            <p className="text-gray-600">Genera reportes de pagos y más</p>
+          </Link>
+        </div>
+      </div>
     </>
   );
 }
+
+export default Page;
