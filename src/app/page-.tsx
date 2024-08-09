@@ -57,15 +57,14 @@ export default function Home() {
   const fecha = "2 de octubre";
 
   const handlePrint = async () => {
-    const data: Uint8Array = await render(receipt);
-    const port = await window.navigator.serial.requestPort();
-    await port.open({ baudRate: 9600 });
-
-    const writer = port.writable?.getWriter();
-    if (writer != null) {
-      await writer.write(data);
-      writer.releaseLock();
-    }
+    // const data: Uint8Array = await render(receipt);
+    // const port = await window.navigator.serial.requestPort();
+    // await port.open({ baudRate: 9600 });
+    // const writer = port.writable?.getWriter();
+    // if (writer != null) {
+    //   await writer.write(data);
+    //   writer.releaseLock();
+    // }
   };
   return (
     <>

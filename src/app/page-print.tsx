@@ -15,7 +15,7 @@ const generatePDF = async () => {
     format: [80, 240],
   });
 
-  pdf.addImage(imgData, "PNG", 0, 0);
+  // pdf.addImage(imgData, "PNG", 0, 0);
   pdf.save("boleta.pdf");
 };
 

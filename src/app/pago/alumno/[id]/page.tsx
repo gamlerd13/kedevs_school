@@ -17,7 +17,7 @@ import { Button } from "@nextui-org/button";
 import { useDisclosure } from "@nextui-org/modal";
 import { createContext } from "react";
 import ModalFormPaymentAlumno from "./ModalFormPaymentAlumno";
-
+import { Grade, Section } from "@prisma/client";
 interface paymentsAlumno {
   payment: Required<PaymentConcept>;
   payed: boolean;
@@ -137,7 +137,7 @@ const Page = () => {
                   <Input label="DNI" value={alumno.dni} />
                   <Input
                     label="Grado y Sección"
-                    value={`${gradeLabels[alumno.grade]} - ${sectionLabels[alumno.section]}`}
+                    value={`${gradeLabels[alumno.grade as Grade]} - ${sectionLabels[alumno.section as Section]}`}
                   />
                 </div>
                 <SubTitlePage subTitle="Pagos" />
