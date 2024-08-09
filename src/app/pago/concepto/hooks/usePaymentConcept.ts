@@ -33,9 +33,7 @@ export const usePaymentConcept = (): PaymentConceptHook => {
         "/api/paymentConcept",
         formData,
       );
-      // console.log(data);
       if (status == 201) {
-        console.log("Se deberia llamar y actualizar la lista");
         setUpdateCount((prev) => prev + 1);
         getData();
       }
