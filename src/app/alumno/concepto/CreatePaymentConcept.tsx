@@ -27,9 +27,9 @@ function CreatePaymentConcept({
   addData: (formData: FormDataPaymentConcept) => void;
   updateData: (formData: PaymentConcept) => void;
 }) {
-  let initialValueForm = {
+  let initialValueForm: { name: string; total: string } = {
     name: "",
-    total: 0.0,
+    total: "0.0",
   };
 
   if (dataEdit) {
@@ -87,7 +87,7 @@ function CreatePaymentConcept({
     if (formData.name.trim() === "") {
       newErrors.nameError = "nombre es requerido";
     }
-    if (!formData.total || formData.total < 0) {
+    if (!formData.total || parseFloat(formData.total) < 0) {
       newErrors.totalError = "total es requerido";
     }
     return newErrors;
@@ -109,9 +109,7 @@ function CreatePaymentConcept({
           name="total"
           label={`Precio ${errors.totalError && "(Requerido y mayor que cero)"}`}
           value={formData.total.toString()}
-          onChange={(e) =>
-            setFormData({ ...formData, total: parseFloat(e.target.value) })
-          }
+          onChange={(e) => setFormData({ ...formData, total: e.target.value })}
           placeholder="100.2"
         />
 
