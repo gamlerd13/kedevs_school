@@ -41,11 +41,11 @@ export default function NavBar() {
       name: "Concepto de Pago",
       url: "/pago/concepto",
     },
-    {
-      id: 5,
-      name: "reportes",
-      url: "/reportes",
-    },
+    // {
+    //   id: 5,
+    //   name: "reportes",
+    //   url: "/reportes",
+    // },
   ];
 
   return (
@@ -79,11 +79,11 @@ export default function NavBar() {
             Concepto Pago
           </Link>
         </NavbarItem>
-        <NavbarItem isActive={pathname == "/reportes"}>
+        {/* <NavbarItem isActive={pathname == "/reportes"}>
           <Link color="foreground" href="/reportes">
             reportes
           </Link>
-        </NavbarItem>
+        </NavbarItem> */}
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>

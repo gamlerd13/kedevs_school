@@ -132,12 +132,16 @@ const Page = () => {
               <div className="sm:w-10/12 w-11/12  mx-auto flex flex-col">
                 <TitlePage title="Datos Alumno" />
 
-                <div className="grid sm:grid-cols-3  grid-cols-1 gap-2 ">
+                <div className="grid sm:grid-cols-4  grid-cols-1 gap-2 ">
                   <Input label="Nombres" value={alumno.fullName} />
                   <Input label="DNI" value={alumno.dni} />
                   <Input
-                    label="Grado y Sección"
-                    value={`${gradeLabels[alumno.grade as Grade]} - ${sectionLabels[alumno.section as Section]}`}
+                    label="Grado"
+                    value={gradeLabels[alumno.grade as Grade]}
+                  />
+                  <Input
+                    label="Sección"
+                    value={sectionLabels[alumno.section as Section]}
                   />
                 </div>
                 <SubTitlePage subTitle="Pagos" />
