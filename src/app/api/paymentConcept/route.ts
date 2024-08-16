@@ -26,11 +26,15 @@ export async function POST(req: NextRequest, res: NextResponse) {
     // throw new Error("Error forzado para pruebas");
     const body: FormDataPaymentConcept = await req.json();
     const { name, total } = body;
+    const totalPeruvianCurrency = parseFloat(total).toLocaleString("es-PE", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
 
     const newPaymentConcept = await prisma.paymentConcept.create({
       data: {
         name,
-        total,
+        total: totalPeruvianCurrency,
       },
     });
     if (!newPaymentConcept) {
@@ -44,17 +48,19 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
 export async function PUT(req: NextRequest, res: NextResponse) {
   try {
-    // throw new Error("Error forzado para pruebas");
-    const body: PaymentConcept = await req.json();
+    const body = await req.json();
     const { name, total, id } = body;
-
+    const totalPeruvianCurrency = parseFloat(total).toLocaleString("es-PE", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
     const updatedPaymentConcept = await prisma.paymentConcept.update({
       where: {
         id: id,
       },
       data: {
         name,
-        total,
+        total: totalPeruvianCurrency,
       },
     });
 

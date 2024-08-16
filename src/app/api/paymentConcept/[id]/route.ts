@@ -11,13 +11,17 @@ export async function PUT(req: NextRequest, res: NextResponse) {
     const id = searchParams.get("id");
     if (!id) throw new Error("No existe Id de concepto de pago");
 
+    const totalPeruvianCurrency = parseFloat(total).toLocaleString("es-PE", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
     const updatedPaymentConcept = await prisma.paymentConcept.update({
       where: {
         id: parseInt(id),
       },
       data: {
         name,
-        total,
+        total: totalPeruvianCurrency,
       },
     });
 
