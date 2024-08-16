@@ -15,6 +15,12 @@ export type Credentials = {
   password: string;
 };
 
+export type Year = {
+  id?: number;
+  year: number;
+  isDefault: boolean;
+};
+
 // declare module "bcrypt" {
 //   const bcrypt: any;
 //   export default bcrypt;

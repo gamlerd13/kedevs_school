@@ -41,6 +41,11 @@ export default function NavBar() {
       name: "Concepto de Pago",
       url: "/pago/concepto",
     },
+    {
+      id: 5,
+      name: "Opciones",
+      url: "/options",
+    },
     // {
     //   id: 5,
     //   name: "reportes",
@@ -58,7 +63,7 @@ export default function NavBar() {
         <Link href="/" aria-current="page">
           <NavbarBrand>
             {/* <AcmeLogo /> */}
-            <p className="font-bold text-inherit">Logo Colegio</p>
+            <p className="font-bold text-inherit">NEWTON PARAISO</p>
           </NavbarBrand>
         </Link>
       </NavbarContent>
@@ -77,6 +82,11 @@ export default function NavBar() {
         <NavbarItem isActive={pathname == "/pago/concepto"}>
           <Link href="/pago/concepto" aria-current="page">
             Concepto Pago
+          </Link>
+        </NavbarItem>
+        <NavbarItem isActive={pathname == "/options"}>
+          <Link href="/options" aria-current="page">
+            Opciones
           </Link>
         </NavbarItem>
         {/* <NavbarItem isActive={pathname == "/reportes"}>

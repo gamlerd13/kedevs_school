@@ -78,11 +78,11 @@ function Page() {
             </p>
           </Link>
           <Link
-            href="/reportes"
+            href="/options"
             className="block bg-white shadow-md rounded-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
           >
-            <h2 className="text-xl font-bold text-black mb-2">Reportes</h2>
-            <p className="text-gray-600">Genera reportes de pagos y más</p>
+            <h2 className="text-xl font-bold text-black mb-2">Opciones</h2>
+            <p className="text-gray-600">Configuraciones extras</p>
           </Link>
         </div>
       </div>

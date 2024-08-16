@@ -181,6 +181,7 @@ function CreatePayment({ addPaymentAlumno }: CreateAlumnoFormProps) {
                 total: e.target.value,
               })
             }
+            disabled
           />
           <Input
             type="text"
