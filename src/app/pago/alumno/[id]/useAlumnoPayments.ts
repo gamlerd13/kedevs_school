@@ -5,18 +5,22 @@ import { toast } from "sonner";
 import useAxiosErrorHandler from "@/hooks/handleAxiosError";
 import { Alumno } from "@/models/alumno";
 
+export type PaymentIncludePaymentConcept = Required<
+  Payment & { paymentConcept: PaymentConcept }
+>;
+
 interface PaymentConceptHook {
   getData: (idAlumno: number) => void;
   addData: (formData: Payment) => void;
 
-  payments: Payment[];
+  payments: PaymentIncludePaymentConcept[];
   //   addData: (formData: FormDataPaymentConcept) => void;
   //   updateData: (formData: PaymentConcept) => void;
 }
 
 export const useAlumnoPayment = (): PaymentConceptHook => {
   const { handleAxiosError } = useAxiosErrorHandler();
-  const [payments, setPayments] = useState<Required<Payment>[]>([]);
+  const [payments, setPayments] = useState<PaymentIncludePaymentConcept[]>([]);
 
   const getData = async (idAlumno: number) => {
     try {

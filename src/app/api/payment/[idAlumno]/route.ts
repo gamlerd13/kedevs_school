@@ -15,6 +15,9 @@ export async function GET(req: NextRequest, { params }: Params) {
       where: {
         alumnoId: idAlumno,
       },
+      include: {
+        paymentConcept: true,
+      },
       orderBy: {
         datePayment: "desc",
       },

@@ -1,23 +1,29 @@
 "use client";
+import { useContext, useEffect, useState, createContext } from "react";
+import { usePathname, useParams } from "next/navigation";
+import axios from "axios";
+
 import TitlePage from "@/components/TitlePage";
 import { Alumno } from "@/models/alumno";
-import { Input } from "@nextui-org/input";
-import axios from "axios";
-import { usePathname, useParams } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { BsFillFileEarmarkPdfFill } from "react-icons/bs";
 import Loading from "../../loading";
 import { FaCheck } from "react-icons/fa";
-import { gradeLabels, sectionLabels } from "@/models/alumno";
 import SubTitlePage from "@/components/SubTitlePage";
+import ModalFormPaymentAlumno from "./ModalFormPaymentAlumno";
+import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
+import { Button } from "@nextui-org/button";
+import { Input } from "@nextui-org/input";
+import { useDisclosure } from "@nextui-org/modal";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import ReactPdfComponent from "@/components/pdfTemplates/reportAlumnoPayments";
+
 import { usePaymentConcept } from "../../concepto/hooks/usePaymentConcept";
 import { useAlumnoPayment } from "./useAlumnoPayments";
-import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
+
 import { AlumnoPayment, Payment, PaymentConcept } from "@/models/payment";
-import { Button } from "@nextui-org/button";
-import { useDisclosure } from "@nextui-org/modal";
-import { createContext } from "react";
-import ModalFormPaymentAlumno from "./ModalFormPaymentAlumno";
 import { Grade, Section } from "@prisma/client";
+import { gradeLabels, sectionLabels } from "@/models/alumno";
+
 interface paymentsAlumno {
   payment: Required<PaymentConcept>;
   payed: boolean;
@@ -56,8 +62,7 @@ export const FormCreateEditContext = createContext<CreateEditPayment>({
 export const ConceptPaymentSelectedContext =
   createContext<Required<PaymentConcept> | null>(null);
 
-const Page = () => {
-  const pathname = usePathname();
+const AlumnoPage = () => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const {
     payments: paymentsAlumno,
@@ -65,14 +70,13 @@ const Page = () => {
     addData: addPaymentAlumno,
   } = useAlumnoPayment();
   const { id }: { id: string } = useParams();
-  const [alumno, setAlumno] = useState<Alumno | null>(null);
+  const [alumno, setAlumno] = useState<Required<Alumno> | null>(null);
   const { conceptPayments } = usePaymentConcept();
   const [conceptPaymentSelected, setConceptPaymentSelected] =
     useState<Required<PaymentConcept> | null>(null);
   const [paymentsRelationAlumno, setPaymentsRelationAlumno] = useState<
     paymentsAlumno[] | null
   >(null);
-
   useEffect(() => {
     if (id) {
       const fetchAlumno = async () => {
@@ -130,7 +134,25 @@ const Page = () => {
             <ModalFormPaymentAlumno />
             <div className="w-full">
               <div className="sm:w-10/12 w-11/12  mx-auto flex flex-col">
-                <TitlePage title="Datos Alumno" />
+                <div className="flex justify-between items-center">
+                  <TitlePage title="Datos Alumno" />
+                  {alumno && paymentsRelationAlumno && (
+                    <PDFDownloadLink
+                      document={
+                        <ReactPdfComponent
+                          alumno={alumno}
+                          paymentsAlumno={paymentsAlumno}
+                        />
+                      }
+                      fileName={`reporte-${alumno.dni}.pdf`}
+                    >
+                      <Button href="" className="bg-red-900 text-white">
+                        Generar reporte de Pagos
+                        <BsFillFileEarmarkPdfFill />
+                      </Button>
+                    </PDFDownloadLink>
+                  )}
+                </div>
 
                 <div className="grid sm:grid-cols-4  grid-cols-1 gap-2 ">
                   <Input label="Nombres" value={alumno.fullName} />
@@ -224,4 +246,4 @@ const ListPaymentConcept = ({
   );
 };
 
-export default Page;
+export default AlumnoPage;

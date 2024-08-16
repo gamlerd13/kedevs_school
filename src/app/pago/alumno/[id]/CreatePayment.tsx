@@ -86,7 +86,10 @@ function CreatePayment({ addPaymentAlumno }: CreateAlumnoFormProps) {
       return;
     }
     if (alumno?.id) {
-      await addPaymentAlumno({ ...formData, alumnoId: alumno.id });
+      await addPaymentAlumno({
+        ...formData,
+        alumnoId: alumno.id,
+      });
       await getAlumnoPayments(alumno?.id);
     } else {
       // await updateData({ ...formData, id: initialValueForm?.id });
@@ -173,7 +176,10 @@ function CreatePayment({ addPaymentAlumno }: CreateAlumnoFormProps) {
             value={formData.total}
             defaultValue={conceptPaymentSelected?.total}
             onChange={(e) =>
-              setFormData({ ...formData, total: e.target.value })
+              setFormData({
+                ...formData,
+                total: e.target.value,
+              })
             }
           />
           <Input
