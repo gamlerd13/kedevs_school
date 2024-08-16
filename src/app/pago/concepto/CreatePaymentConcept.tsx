@@ -11,7 +11,7 @@ import {
 } from "@/models/payment";
 import axios from "axios";
 import { toast } from "sonner";
-import { usePaymentConcept } from "./hooks/usePayment";
+import { usePaymentConcept } from "./hooks/usePaymentConcept";
 import { PaymentConcept } from "@/models/payment";
 
 function CreatePaymentConcept({
@@ -27,15 +27,15 @@ function CreatePaymentConcept({
   addData: (formData: FormDataPaymentConcept) => void;
   updateData: (formData: PaymentConcept) => void;
 }) {
-  let initialValueForm: { name: string; total: string } = {
+  let initialValueForm: FormDataPaymentConcept = {
     name: "",
-    total: "0.0",
+    total: "",
   };
 
   if (dataEdit) {
     initialValueForm = {
       name: dataEdit.name,
-      total: dataEdit.total,
+      total: dataEdit.total.toString(),
     };
   }
 
