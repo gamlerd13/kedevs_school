@@ -1,6 +1,6 @@
 // export { default } from "next-auth/middleware";
 import { NextFetchEvent, NextResponse, type NextRequest } from "next/server";
-import { withAuth } from "next-auth/middleware";
+import { NextRequestWithAuth, withAuth } from "next-auth/middleware";
 import prisma from "./libs/db";
 
 // Middleware de año
@@ -44,7 +44,10 @@ const authMiddleware = withAuth({
 });
 
 // Encadenar middlewares
-export async function middleware(request: NextRequest, event: NextFetchEvent) {
+export async function middleware(
+  request: NextRequestWithAuth,
+  event: NextFetchEvent,
+) {
   // Ejecutar el middleware de autenticación primero
   const authResponse = await authMiddleware(request, event);
 
