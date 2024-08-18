@@ -18,10 +18,11 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
-    const body: Year = await req.json();
+    const body: {
+      year: string;
+    } = await req.json();
     const { year } = body;
 
-    // Iniciar una transacción para asegurarse de que ambas operaciones se completen juntas
     const transaction = await prisma.$transaction([
       // Desactivar cualquier año predeterminado existente
       prisma.year.updateMany({
@@ -29,9 +30,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
         data: { isDefault: false },
       }),
       // Establecer el nuevo año predeterminado
-      prisma.year.update({
-        where: { year: year },
-        data: { isDefault: true },
+      prisma.year.upsert({
+        where: { year: parseInt(year) },
+        update: { isDefault: true },
+        create: { year: parseInt(year), isDefault: true },
       }),
     ]);
 

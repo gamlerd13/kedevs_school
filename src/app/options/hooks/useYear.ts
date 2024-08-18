@@ -1,9 +1,14 @@
 import { Year } from "@/models/main";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
+interface SetFormDataYear {
+  year: string;
+}
 interface UseYear {
   currentYear: Required<Year> | null;
+  updateYear(formData: SetFormDataYear): void;
 }
 
 export const useYear = () => {
@@ -17,7 +22,20 @@ export const useYear = () => {
         setCurrentYear(data);
       }
     } catch (error) {
-      console.log("error in get year");
+      toast.error("hubo un error, intente más tarde");
+    }
+  };
+
+  const updateYear = async (formData: SetFormDataYear) => {
+    try {
+      const { status } = await axios.post("/api/year/", formData);
+
+      if (status === 201) {
+        getYear();
+        toast.success("Año establecido con éxito");
+      }
+    } catch (error) {
+      toast.error("hubo un error al cambiar el año");
     }
   };
 
@@ -27,5 +45,6 @@ export const useYear = () => {
 
   return {
     currentYear,
+    updateYear,
   };
 };
