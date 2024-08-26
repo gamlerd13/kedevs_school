@@ -115,10 +115,12 @@ function CreatePaymentConcept({
       listInputObjectPrices.some(
         (priceObject) => priceObject.price.length < 0,
       ) ||
-      listInputObjectPrices.every(
-        (priceObject) =>
-          parseFloat(priceObject.price).toString() === priceObject.price,
-      )
+      !listInputObjectPrices
+        .filter((e) => e.status == true)
+        .every(
+          (priceObject) =>
+            parseFloat(priceObject.price).toString() === priceObject.price,
+        )
     ) {
       newErrors.totalError = "Verificar precio e.j: 234.23";
     }
