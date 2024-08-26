@@ -1,20 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/libs/db";
-import { FormDataPaymentConcept } from "@/models/payment";
+import { FormDataPaymentConcept, PaymentConceptForm } from "@/models/payment";
 import handlePrismaError from "@/libs/responseApi/handlePrismaError";
 
 export async function PUT(req: NextRequest, res: NextResponse) {
   try {
-    const body: FormDataPaymentConcept = await req.json();
+    const body: PaymentConceptForm = await req.json();
     const { name, total } = body;
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
     if (!id) throw new Error("No existe Id de concepto de pago");
 
-    const totalPeruvianCurrency = parseFloat(total).toLocaleString("es-PE", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
+    const totalPeruvianCurrency = total.map((price) =>
+      parseFloat(price).toFixed(2),
+    );
     const updatedPaymentConcept = await prisma.paymentConcept.update({
       where: {
         id: parseInt(id),

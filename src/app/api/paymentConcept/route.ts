@@ -29,7 +29,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const totalPeruvianCurrency = total.map((price) =>
       parseFloat(price).toFixed(2),
     );
-    console.log(totalPeruvianCurrency);
+
     const newPaymentConcept = await prisma.paymentConcept.create({
       data: {
         name,

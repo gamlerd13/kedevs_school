@@ -36,10 +36,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     if (!datePayment || isNaN(new Date(datePayment).getTime())) {
       newDatePayment = new Date().toISOString();
     }
-    const totalPeruvianCurrency = parseFloat(total).toLocaleString("es-PE", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
+    const totalPeruvianCurrency = parseFloat(total).toFixed(2);
     const newPayment = await prisma.payment.create({
       data: {
         alumnoId,

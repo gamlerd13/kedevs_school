@@ -74,7 +74,7 @@ enum PaymentMethod {
 model PaymentConcept {
   id       Int       @id @default(autoincrement())
   name     String
-  total    Decimal[] @default([150, 170, 190])
+  total    Decimal[] @default([])
   payments Payment[]
 }
 
@@ -86,7 +86,7 @@ model Payment {
   paymentConcept   PaymentConcept @relation(fields: [paymentConceptId], references: [id])
   paymentMethod    PaymentMethod  @default(YAPE)
   datePayment      DateTime       @default(now())
-  codePayment      String
+  codePayment      String         @unique
   comment          String?
   total            Decimal
 

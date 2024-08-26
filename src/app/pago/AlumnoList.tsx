@@ -135,7 +135,7 @@ function AlumnoListComponent() {
               </TableCell> */}
               <TableCell>
                 <div className="text-md mobile:flex">
-                  <Button
+                  {/* <Button
                     type="button"
                     className="flex bg-green-700 text-white p-0"
                     onClick={() =>
@@ -147,11 +147,11 @@ function AlumnoListComponent() {
                   >
                     <FaMoneyBillWave />
                     Pagar
-                  </Button>
+                  </Button> */}
                   <Link href={`/pago/alumno/${alumno.id}`}>
                     <button
                       type="button"
-                      className="flex rounded-lg px-2 bg-slate-200 hover:bg-slate-300 h-full justify-center items-center"
+                      className="flex rounded-lg p-2 bg-slate-200 hover:bg-slate-300 h-full justify-center items-center"
                     >
                       Detalles
                     </button>
