@@ -15,7 +15,7 @@ import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
 import { useDisclosure } from "@nextui-org/modal";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import ReactPdfComponent from "@/components/pdfTemplates/reportAlumnoPayments";
+import ReactPdfComponent from "@/components/pdfTemplates/reportAlumnoPaymentsv2";
 
 import { usePaymentConcept } from "../../concepto/hooks/usePaymentConcept";
 import { useAlumnoPayment } from "./useAlumnoPayments";
@@ -23,10 +23,12 @@ import { useAlumnoPayment } from "./useAlumnoPayments";
 import { AlumnoPayment, Payment, PaymentConcept } from "@/models/payment";
 import { Grade, Section } from "@prisma/client";
 import { gradeLabels, sectionLabels } from "@/models/alumno";
+import ButtonBackArrow from "@/components/ButtonBackArrow";
 
-interface paymentsAlumno {
+interface PaymentsAlumno {
   payment: Required<PaymentConcept>;
   payed: boolean;
+  total: string;
 }
 
 //context modal
@@ -75,8 +77,9 @@ const AlumnoPage = () => {
   const [conceptPaymentSelected, setConceptPaymentSelected] =
     useState<Required<PaymentConcept> | null>(null);
   const [paymentsRelationAlumno, setPaymentsRelationAlumno] = useState<
-    paymentsAlumno[] | null
+    PaymentsAlumno[] | null
   >(null);
+
   useEffect(() => {
     if (id) {
       const fetchAlumno = async () => {
@@ -93,21 +96,22 @@ const AlumnoPage = () => {
   // filtrar pagos
   useEffect(() => {
     if (conceptPayments && paymentsAlumno) {
-      const paymentsAlumnoMap: paymentsAlumno[] = conceptPayments.map(
+      const paymentsAlumnoMap: PaymentsAlumno[] = conceptPayments.map(
         (payment) => {
-          if (
-            paymentsAlumno.find(
-              (concepto) => concepto.paymentConceptId === payment.id,
-            )
-          ) {
+          const findPayment = paymentsAlumno.find(
+            (concepto) => concepto.paymentConceptId === payment.id,
+          );
+          if (findPayment) {
             return {
               payment: payment,
               payed: true,
+              total: findPayment.total,
             };
           } else {
             return {
               payment: payment,
               payed: false,
+              total: "00.00",
             };
           }
         },
@@ -134,6 +138,9 @@ const AlumnoPage = () => {
             <ModalFormPaymentAlumno />
             <div className="w-full">
               <div className="sm:w-10/12 w-11/12  mx-auto flex flex-col">
+                <div>
+                  <ButtonBackArrow />
+                </div>
                 <div className="flex justify-between items-center">
                   <TitlePage title="Datos Alumno" />
                   {alumno && paymentsRelationAlumno && (
@@ -142,6 +149,7 @@ const AlumnoPage = () => {
                         <ReactPdfComponent
                           alumno={alumno}
                           paymentsAlumno={paymentsAlumno}
+                          paymentsRelationAlumno={paymentsRelationAlumno}
                         />
                       }
                       fileName={`reporte-${alumno.dni}.pdf`}
@@ -203,7 +211,7 @@ const ListPaymentConcept = ({
   paymentRelationAlumno,
   setConceptPaymentSelected,
 }: {
-  paymentRelationAlumno: paymentsAlumno;
+  paymentRelationAlumno: PaymentsAlumno;
   setConceptPaymentSelected: (PaymentConcept: Required<PaymentConcept>) => void;
 }) => {
   const { onOpen } = useContext(ModalCreatePaymentContext);
@@ -215,7 +223,7 @@ const ListPaymentConcept = ({
         </h1>
       </CardHeader>
       <CardBody>
-        <span> S/. {paymentRelationAlumno.payment.total}</span>
+        <span> S/. {paymentRelationAlumno.total}</span>
       </CardBody>
       <CardFooter
         className={

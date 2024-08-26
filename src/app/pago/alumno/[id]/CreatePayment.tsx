@@ -9,7 +9,7 @@ import {
   FormCreateEditContext,
   ModalCreatePaymentContext,
 } from "./page";
-import { Payment } from "@/models/payment";
+import { Payment, PaymentConcept } from "@/models/payment";
 import { usePaymentConcept } from "../../concepto/hooks/usePaymentConcept";
 import { paymentMethods } from "@/models/payment";
 import { DatePicker } from "@nextui-org/react";
@@ -33,13 +33,15 @@ function CreatePayment({ addPaymentAlumno }: CreateAlumnoFormProps) {
   );
 
   const { conceptPayments } = usePaymentConcept();
-  const conceptPaymentSelected = useContext(ConceptPaymentSelectedContext);
+  const conceptPaymentSelected: Required<PaymentConcept> | null = useContext(
+    ConceptPaymentSelectedContext,
+  );
 
   const { alumno, getAlumnoPayments } = useContext(FormCreateEditContext);
   const { onClose } = useContext(ModalCreatePaymentContext);
 
   let initialValuePayment: Payment = {
-    total: conceptPaymentSelected?.total.toString() || "",
+    total: "",
     paymentMethod: "",
     alumnoId: 0,
     codePayment: "",
@@ -55,6 +57,7 @@ function CreatePayment({ addPaymentAlumno }: CreateAlumnoFormProps) {
     initialValuePayment = {
       ...initialValuePayment,
       paymentConceptId: conceptPaymentSelected.id,
+      total: conceptPaymentSelected.total[0].toString(),
     };
   }
 
@@ -68,14 +71,15 @@ function CreatePayment({ addPaymentAlumno }: CreateAlumnoFormProps) {
     total: "",
   });
 
-  useEffect(() => {
-    if (conceptPaymentSelected) {
-      setFormData((prev: Payment) => ({
-        ...prev,
-        paymentConceptId: conceptPaymentSelected.id,
-      }));
-    }
-  }, [conceptPaymentSelected]);
+  // useEffect(() => {
+  //   if (conceptPaymentSelected) {
+  //     setFormData((prev: Payment) => ({
+  //       ...prev,
+  //       paymentConceptId: conceptPaymentSelected.id,
+  //       total: conceptPaymentSelected.total[0].toString(),
+  //     }));
+  //   }
+  // }, [conceptPaymentSelected]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,35 +124,35 @@ function CreatePayment({ addPaymentAlumno }: CreateAlumnoFormProps) {
     }
     return newErrors;
   };
-
+  console.log(formData);
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex flex-col gap-4">
         <div className="w-full flex gap-2">
-          <Select
-            label={`Concepto de pago ${errors.paymentConceptId && "(Requerido)"}`}
-            placeholder="Seleccione"
-            name="paymentConceptId"
-            value={formData.paymentConceptId.toString()}
-            defaultSelectedKeys={[
-              conceptPayments && formData.paymentConceptId.toString(),
-            ]}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                paymentConceptId: parseInt(e.target.value),
-              })
-            }
-          >
-            {conceptPayments?.map((concept) => (
-              <SelectItem
-                key={concept.id.toString()}
-                value={concept.id.toString()}
-              >
-                {concept.name}
-              </SelectItem>
-            ))}
-          </Select>
+          {conceptPayments.length > 0 && (
+            <Select
+              label={`Concepto de pago ${errors.paymentConceptId && "(Requerido)"}`}
+              placeholder="Seleccione"
+              name="paymentConceptId"
+              value={formData.paymentConceptId.toString()}
+              defaultSelectedKeys={[formData.paymentConceptId.toString()]}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  paymentConceptId: parseInt(e.target.value),
+                })
+              }
+            >
+              {conceptPayments.map((concept) => (
+                <SelectItem
+                  key={concept.id.toString()}
+                  value={concept.id.toString()}
+                >
+                  {concept.name}
+                </SelectItem>
+              ))}
+            </Select>
+          )}
 
           <Select
             label={`Método de Pago ${errors.paymentMethod && "(Requerido)"}`}
@@ -169,7 +173,7 @@ function CreatePayment({ addPaymentAlumno }: CreateAlumnoFormProps) {
         </div>
 
         <div className="w-full flex gap-2">
-          <Input
+          {/* <Input
             type="number"
             name="total"
             label={`Total ${errors.total && "(Requerido)"}`}
@@ -182,7 +186,29 @@ function CreatePayment({ addPaymentAlumno }: CreateAlumnoFormProps) {
               })
             }
             disabled
-          />
+          /> */}
+          {conceptPaymentSelected && conceptPaymentSelected.total && (
+            <Select
+              label={`Total ${errors.total && "(Requerido)"}`}
+              placeholder="Seleccione"
+              name="total"
+              value={formData.total}
+              defaultSelectedKeys={[formData?.total]}
+              // defaultSelectedKeys={[conceptPaymentSelected.total[0].toString()]}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  total: e.target.value,
+                })
+              }
+            >
+              {conceptPaymentSelected.total.map((price) => (
+                <SelectItem key={price.toString()} value={price.toString()}>
+                  {price}
+                </SelectItem>
+              ))}
+            </Select>
+          )}
           <Input
             type="text"
             name="codePayment"

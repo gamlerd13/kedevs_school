@@ -16,6 +16,10 @@ import { Grade, Section } from "@prisma/client";
 export type PaymentIncludePaymentConcept = Required<
   Payment & { paymentConcept: PaymentConcept }
 >;
+interface paymentsAlumno {
+  payment: Required<PaymentConcept>;
+  payed: boolean;
+}
 
 const styles = StyleSheet.create({
   page: {
@@ -74,6 +78,7 @@ const styles = StyleSheet.create({
   all: {
     fontSize: 10,
   },
+
   //table here -----------------------------------------------------
   table: {
     paddingBottom: 5,
@@ -107,16 +112,12 @@ const styles = StyleSheet.create({
 const ReactPdfComponent = ({
   alumno,
   paymentsAlumno,
+  paymentsRelationAlumno,
 }: {
   alumno: Required<Alumno>;
   paymentsAlumno: PaymentIncludePaymentConcept[];
+  paymentsRelationAlumno: paymentsAlumno[];
 }) => {
-  const totalPrice = paymentsAlumno.reduce((sum: number, payment) => {
-    return sum + parseFloat(payment.total);
-  }, 0);
-
-  console.log(totalPrice);
-
   return (
     <Document style={styles.all}>
       <Page style={styles.page}>
@@ -170,7 +171,18 @@ const ReactPdfComponent = ({
           </View>
         </View>
 
-        <View style={{ width: "100%", margin: 20 }}></View>
+        <View
+          style={{
+            width: "100%",
+            marginVertical: 10,
+            fontWeight: 400,
+            lineHeight: 1.5,
+            fontSize: 11,
+            color: "#767f7e",
+          }}
+        >
+          <Text>PAGOS REALIZADOS</Text>
+        </View>
 
         <View style={styles.table}>
           <View style={[styles.tableRow, styles.tableHeader]}>
@@ -221,10 +233,89 @@ const ReactPdfComponent = ({
           ))}
         </View>
 
-        <View style={styles.totalPrice}>
+        {paymentsRelationAlumno.length !== paymentsAlumno.length && (
+          <>
+            <View
+              style={{
+                width: "100%",
+                marginVertical: 10,
+                fontWeight: 400,
+                lineHeight: 1.5,
+                fontSize: 11,
+                color: "#767f7e",
+              }}
+            >
+              <Text>PAGOS PENDIENTES</Text>
+            </View>
+
+            {/* Table no pagado */}
+            <View style={styles.table}>
+              <View style={[styles.tableRow, styles.tableHeader]}>
+                <Text style={[styles.tableCell, styles.cellFlex, { flex: 1 }]}>
+                  N°
+                </Text>
+                <Text style={[styles.tableCell, { flex: 5 }]}>
+                  CONCEPTO DE PAGO
+                </Text>
+                <Text style={[styles.tableCell, { flex: 2 }]}>MET./PAGO</Text>
+                <Text style={[styles.tableCell, styles.cellFlex, { flex: 3 }]}>
+                  NRO. OPERACIÓN
+                </Text>
+                <Text style={[styles.tableCell, styles.cellFlex, { flex: 3 }]}>
+                  FECHA
+                </Text>
+                <Text style={[styles.tableCell, styles.cellFlex, { flex: 3 }]}>
+                  MONTO S/.
+                </Text>
+              </View>
+              {paymentsRelationAlumno
+                .filter((payment) => !payment.payed) // Filtramos solo los elementos con payment.payed === true
+                .map((payment, index) => (
+                  <View key={index} style={styles.tableRow}>
+                    <Text
+                      style={[styles.tableCell, styles.cellFlex, { flex: 1 }]}
+                    >
+                      {index + 1}
+                    </Text>
+                    <View
+                      style={[
+                        styles.tableCell,
+                        { flexDirection: "column", flex: 5 },
+                      ]}
+                    >
+                      <Text>{payment.payment.name}</Text>
+                    </View>
+                    <Text
+                      style={[styles.tableCell, styles.cellFlex, { flex: 2 }]}
+                    >
+                      ---
+                    </Text>
+                    <Text
+                      style={[styles.tableCell, styles.cellFlex, { flex: 3 }]}
+                    >
+                      ---
+                    </Text>
+                    <Text
+                      style={[styles.tableCell, styles.cellFlex, { flex: 3 }]}
+                    >
+                      ---
+                    </Text>
+                    <Text
+                      style={[styles.tableCell, styles.cellFlex, { flex: 3 }]}
+                    >
+                      {/* {payment.payment.total} */}
+                      ---
+                    </Text>
+                  </View>
+                ))}
+            </View>
+          </>
+        )}
+
+        {/* <View style={styles.totalPrice}>
           <Text style={styles.cellTotalPrice}>TOTAL</Text>
           <Text style={styles.cellTotalPrice}> S/. {totalPrice}</Text>
-        </View>
+        </View> */}
       </Page>
     </Document>
   );

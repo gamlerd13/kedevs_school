@@ -1,13 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { PaymentConcept } from "@/models/payment";
+import { PaymentConcept, PaymentConceptForm } from "@/models/payment";
 import { FormDataPaymentConcept } from "@/models/payment";
 import { toast } from "sonner";
 interface PaymentConceptHook {
   conceptPayments: Required<PaymentConcept>[];
   getData: () => void;
-  addData: (formData: FormDataPaymentConcept) => void;
-  updateData: (formData: PaymentConcept) => void;
+  addData: (formData: PaymentConceptForm) => void;
+  updateData: (formData: Required<PaymentConceptForm>) => void;
 }
 
 export const usePaymentConcept = (): PaymentConceptHook => {
@@ -27,7 +27,7 @@ export const usePaymentConcept = (): PaymentConceptHook => {
     }
   };
 
-  const addData = async (formData: FormDataPaymentConcept) => {
+  const addData = async (formData: PaymentConceptForm) => {
     try {
       const { data, status } = await axios.post(
         "/api/paymentConcept",
@@ -48,7 +48,7 @@ export const usePaymentConcept = (): PaymentConceptHook => {
     }
   };
 
-  const updateData = async (formData: PaymentConcept) => {
+  const updateData = async (formData: Required<PaymentConceptForm>) => {
     try {
       const { data, status } = await axios.put(
         // `/api/paymentConcept/${formData.id}`, // with id

@@ -67,14 +67,14 @@ enum PaymentMethod {
   BBVA
   SCOTIABANK
   INTERBANK
-  CASH
-  OTHER
+  EFECTIVO
+  OTRO
 }
 
 model PaymentConcept {
   id       Int       @id @default(autoincrement())
   name     String
-  total    Decimal
+  total    Decimal[] @default([150, 170, 190])
   payments Payment[]
 }
 

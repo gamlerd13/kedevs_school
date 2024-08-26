@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/libs/db";
 import { Prisma } from "@prisma/client";
-import { FormDataPaymentConcept } from "@/models/payment";
+import { FormDataPaymentConcept, PaymentConceptForm } from "@/models/payment";
 import { PaymentConcept } from "@prisma/client";
 import handlePrismaError from "@/libs/responseApi/handlePrismaError";
 
@@ -24,13 +24,12 @@ export async function GET() {
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
     // throw new Error("Error forzado para pruebas");
-    const body: FormDataPaymentConcept = await req.json();
+    const body: PaymentConceptForm = await req.json();
     const { name, total } = body;
-    const totalPeruvianCurrency = parseFloat(total).toLocaleString("es-PE", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-
+    const totalPeruvianCurrency = total.map((price) =>
+      parseFloat(price).toFixed(2),
+    );
+    console.log(totalPeruvianCurrency);
     const newPaymentConcept = await prisma.paymentConcept.create({
       data: {
         name,
@@ -48,12 +47,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
 export async function PUT(req: NextRequest, res: NextResponse) {
   try {
-    const body = await req.json();
+    const body: Required<PaymentConceptForm> = await req.json();
     const { name, total, id } = body;
-    const totalPeruvianCurrency = parseFloat(total).toLocaleString("es-PE", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
+    const totalPeruvianCurrency = total.map((price) =>
+      parseFloat(price).toFixed(2),
+    );
     const updatedPaymentConcept = await prisma.paymentConcept.update({
       where: {
         id: id,

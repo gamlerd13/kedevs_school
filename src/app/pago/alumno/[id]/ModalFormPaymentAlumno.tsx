@@ -1,3 +1,4 @@
+"use client";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@nextui-org/modal";
 import React, { useContext } from "react";
 import CreatePayment from "./CreatePayment";

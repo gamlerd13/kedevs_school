@@ -32,6 +32,7 @@
     "bcrypt-ts": "^5.0.2",
     "file-saver": "^2.0.5",
     "framer-motion": "^11.2.13",
+    "html-pdf": "^3.0.1",
     "jspdf": "^2.5.1",
     "next": "14.2.4",
     "next-auth": "^4.24.7",
@@ -43,6 +44,8 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/file-saver": "^2.0.7",
+    "@types/html-pdf": "^3.0.3",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

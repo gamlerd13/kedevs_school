@@ -38,7 +38,9 @@ function ListPaymentConcept({
               </h1>
             </CardHeader>
             <CardBody>
-              <span> S/. {conceptPayment.total}</span>
+              {conceptPayment.total.map((price) => (
+                <span key={price}> S/. {price}</span>
+              ))}
             </CardBody>
             <CardFooter className="flex justify-between text-2xl">
               <button

@@ -35,7 +35,13 @@ export interface PaymentForm {
 export interface PaymentConcept {
   id?: number;
   name: string;
-  total: string;
+  total: number[];
+}
+
+export interface PaymentConceptForm {
+  id?: number;
+  name: string;
+  total: string[];
 }
 
 export type AlumnoPayment = Required<Alumno> & {
@@ -51,8 +57,8 @@ export const paymentMethods = [
   "BBVA",
   "SCOTIABANK",
   "INTERBANK",
-  "CASH",
-  "OTHER",
+  "EFECTIVO",
+  "OTRO",
 ];
 
 // const ejemploAlumnoPayment: AlumnoPayment = {
@@ -78,7 +84,12 @@ export const paymentMethods = [
 //   ],
 // };
 
-export type FormDataPaymentConcept = Omit<PaymentConcept, "id">;
+// export type FormDataPaymentConcept = Omit<PaymentConcept, "id">;
+export type FormDataPaymentConcept = {
+  id?: number;
+  name: string;
+  totalList: string[];
+};
 export type FormErrorsPaymentConcept = {
   nameError: string;
   totalError: string;

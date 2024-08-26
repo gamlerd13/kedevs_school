@@ -149,13 +149,12 @@ function AlumnoListComponent() {
                     Pagar
                   </Button>
                   <Link href={`/pago/alumno/${alumno.id}`}>
-                    <Button
+                    <button
                       type="button"
-                      className="flex"
-                      onClick={() => console.log("Ir a detalles")}
+                      className="flex rounded-lg px-2 bg-slate-200 hover:bg-slate-300 h-full justify-center items-center"
                     >
                       Detalles
-                    </Button>
+                    </button>
                   </Link>
                 </div>
               </TableCell>
