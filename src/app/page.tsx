@@ -8,18 +8,18 @@ function Page() {
     <>
       <NavBar />
       <div className="min-h-screen bg-beige flex flex-col items-center justify-center p-6">
-        <div className="max-w-4xl w-full bg-white shadow-md rounded-md overflow-hidden">
+        <div className="max-w-4xl w-full bg-default shadow-md rounded-md overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2">
             <div className="p-8">
-              <h1 className="text-3xl font-bold text-black mb-4">
+              <h1 className="text-3xl font-bold  mb-4">
                 Sistema de Gestión de Pagos para Colegios
               </h1>
-              <p className="text-lg text-gray-700 mb-6">
+              <p className="text-lg  mb-6">
                 Nuestro sistema permite gestionar eficientemente los pagos de
                 los estudiantes, facilitando el seguimiento de las cuotas y la
                 emisión de recibos de manera rápida y sencilla.
               </p>
-              <p className="text-md text-gray-600 mb-6">
+              <p className="text-md  mb-6">
                 Desarrollado pensando en la administración escolar, este sistema
                 asegura que todas las transacciones sean seguras y estén
                 registradas de manera organizada.
@@ -50,39 +50,31 @@ function Page() {
         <div className="max-w-4xl w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-20">
           <Link
             href="/pago"
-            className="block bg-white shadow-md rounded-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
+            className="block bg-default shadow-md rounded-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
           >
-            <h2 className="text-xl font-bold text-black mb-2">Pagos</h2>
-            <p className="text-gray-600">
-              Gestiona los pagos de los estudiantes
-            </p>
+            <h2 className="text-xl font-bold  mb-2">Pagos</h2>
+            <p className="">Gestiona los pagos de los estudiantes</p>
           </Link>
           <Link
             href="/alumnos"
-            className="block bg-white shadow-md rounded-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
+            className="block bg-default shadow-md rounded-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
           >
-            <h2 className="text-xl font-bold text-black mb-2">Alumnos</h2>
-            <p className="text-gray-600">
-              Administra la información de los alumnos
-            </p>
+            <h2 className="text-xl font-bold mb-2">Alumnos</h2>
+            <p className="">Administra la información de los alumnos</p>
           </Link>
           <Link
             href="/pago/concepto"
-            className="block bg-white shadow-md rounded-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
+            className="block bg-default shadow-md rounded-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
           >
-            <h2 className="text-xl font-bold text-black mb-2">
-              Conceptos de Pago
-            </h2>
-            <p className="text-gray-600">
-              Define y gestiona los conceptos de pago
-            </p>
+            <h2 className="text-xl font-bold  mb-2">Conceptos de Pago</h2>
+            <p className="">Define y gestiona los conceptos de pago</p>
           </Link>
           <Link
             href="/options"
-            className="block bg-white shadow-md rounded-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
+            className="block bg-default shadow-md rounded-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
           >
-            <h2 className="text-xl font-bold text-black mb-2">Opciones</h2>
-            <p className="text-gray-600">Configuraciones extras</p>
+            <h2 className="text-xl font-bold  mb-2">Opciones</h2>
+            <p className="">Configuraciones extras</p>
           </Link>
         </div>
       </div>

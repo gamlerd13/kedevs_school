@@ -9,6 +9,16 @@ export default function App() {
       <div className="lg:w-[1024px] sm:w-[500px] flex flex-wrap lg:border-2 rounded-xl">
         <div className="w-full lg:w-1/2 py-4 sm:px-16 px-4 flex justify-center items-center">
           <div className="">
+            <div className="w-full flex justify-center">
+              <Image
+                alt="logo"
+                isBlurred
+                height={160}
+                radius="sm"
+                src="/logo-colegio.jpeg"
+                width={160}
+              />
+            </div>
             <div className="pt-5 sm:px-5 text-center">
               <h1 className="text-2xl font-medium">Sistema educativo</h1>
               <span className="h-32">

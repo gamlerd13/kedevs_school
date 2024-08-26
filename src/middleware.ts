@@ -3,6 +3,15 @@ import { NextFetchEvent, NextResponse, type NextRequest } from "next/server";
 import { NextRequestWithAuth, withAuth } from "next-auth/middleware";
 import prisma from "./libs/db";
 
+const publicPaths = [
+  /^\/api\/alumnoLastPayment$/,
+  /^\/api\/alumno\/.*$/,
+  /^\/_next\/static\/.*$/, // Recursos estáticos generados por Next.js
+  /^\/favicon.ico$/, // Favicon
+  /^\/logo.png$/, // Específico para `logo.png` en `public`
+  /^\/.*\.(jpg|jpeg|png|gif|svg)$/, // Cualquier archivo de imagen en `public`
+];
+
 // Middleware de año
 export async function yearMiddleware(request: NextRequest) {
   const url = request.nextUrl;
@@ -36,7 +45,6 @@ const authMiddleware = withAuth({
     async authorized({ req, token }) {
       if (token) return true;
 
-      const publicPaths = [/^\/api\/alumnoLastPayment$/, /^\/api\/alumno\/.*$/];
       const path = req.nextUrl.pathname;
 
       return publicPaths.some((publicPath) => publicPath.test(path));
@@ -66,5 +74,7 @@ export async function middleware(
 }
 
 export const config = {
-  matcher: ["/((?!api/auth|auth/login|logo.png).*)"], // Proteger todas las rutas excepto las rutas de autenticación y la de login
+  matcher: [
+    "/((?!api/auth|auth/login|logo.png|_next/static|favicon.ico|public).*)", // Proteger todas las rutas excepto las rutas de autenticación, login y los recursos estáticos
+  ],
 };

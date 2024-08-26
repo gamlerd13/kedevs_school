@@ -13,7 +13,9 @@ import {
   NavbarMenu,
   NavbarMenuItem,
   Button,
+  Image,
 } from "@nextui-org/react";
+import { ThemeSwitcher } from "./ThemeSwitcher";
 // import { AcmeLogo } from "./AcmeLogo.jsx";
 
 export default function NavBar() {
@@ -62,8 +64,17 @@ export default function NavBar() {
         />
         <Link href="/" aria-current="page">
           <NavbarBrand>
-            {/* <AcmeLogo /> */}
-            <p className="font-bold text-inherit">NEWTON PARAISO</p>
+            <Image
+              alt="logo"
+              isBlurred
+              height={40}
+              radius="sm"
+              src="/logo-colegio.jpeg"
+              width={40}
+            />
+            <p className="font-bold text-inherit hidden sm:block">
+              NEWTON PARAISO
+            </p>
           </NavbarBrand>
         </Link>
       </NavbarContent>
@@ -96,7 +107,8 @@ export default function NavBar() {
         </NavbarItem> */}
       </NavbarContent>
       <NavbarContent justify="end">
-        <NavbarItem>
+        <NavbarItem className="flex gap-x-2">
+          <ThemeSwitcher />
           <Button onClick={() => signOut()} color="default" variant="flat">
             Salir
             <IoIosLogOut />
