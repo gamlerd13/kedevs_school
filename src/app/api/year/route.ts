@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/libs/db";
-import { Year } from "@prisma/client";
 import handlePrismaError from "@/libs/responseApi/handlePrismaError";
 
 export async function GET(req: NextRequest) {

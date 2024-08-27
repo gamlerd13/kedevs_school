@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/libs/db";
 import { PaymentPost } from "@/models/payment";
 import handlePrismaError from "@/libs/responseApi/handlePrismaError";
+import { Year } from "@prisma/client";
+import { getCurrentYear } from "@/libs/year";
 
 export async function GET(req: NextRequest) {
   try {
@@ -23,9 +25,16 @@ export async function GET(req: NextRequest) {
      **/
 
     // Get alumnos with latest payment
+
+    let currentYear: Year | null = await getCurrentYear();
+    if (!currentYear) throw new Error("Error en establecer año");
+
     const alumnos = await prisma.alumno.findMany({
       include: {
         payments: {
+          where: {
+            yearId: currentYear.id,
+          },
           include: {
             paymentConcept: true,
           },

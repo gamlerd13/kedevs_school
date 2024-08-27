@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/libs/db";
 import { PaymentPost } from "@/models/payment";
-import { PaymentConcept } from "@prisma/client";
+import { PaymentConcept, Year } from "@prisma/client";
 import handlePrismaError from "@/libs/responseApi/handlePrismaError";
+import { getCurrentYear } from "@/libs/year";
 
 interface Params {
   params: { idAlumno: string };
@@ -10,10 +11,14 @@ interface Params {
 
 export async function GET(req: NextRequest, { params }: Params) {
   try {
+    let currentYear: Year | null = await getCurrentYear();
+    if (!currentYear) throw new Error("Error en establecer año");
+
     const idAlumno = parseInt(params.idAlumno);
     const payments = await prisma.payment.findMany({
       where: {
         alumnoId: idAlumno,
+        yearId: currentYear.id,
       },
       include: {
         paymentConcept: true,

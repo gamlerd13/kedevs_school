@@ -84,17 +84,21 @@ model Payment {
   alumno           Alumno         @relation(fields: [alumnoId], references: [id])
   paymentConceptId Int
   paymentConcept   PaymentConcept @relation(fields: [paymentConceptId], references: [id])
+  yearId           Int            @default(1)
+  year             Year           @relation(fields: [yearId], references: [id])
   paymentMethod    PaymentMethod  @default(YAPE)
   datePayment      DateTime       @default(now())
   codePayment      String         @unique
   comment          String?
   total            Decimal
 
-  @@unique([alumnoId, paymentConceptId]) // Esta línea asegura que cada alumno sólo puede tener un pago por concepto de pago
+  // Modificamos la restricción única para incluir el campo yearId
+  @@unique([alumnoId, paymentConceptId, yearId]) // Esta línea asegura que cada alumno sólo puede tener un pago por concepto de pago por año
 }
 
 model Year {
-  id        Int     @id @default(autoincrement())
-  year      Int     @unique
-  isDefault Boolean @default(false)
+  id        Int       @id @default(autoincrement())
+  year      Int       @unique
+  isDefault Boolean   @default(false)
+  Payment   Payment[]
 }

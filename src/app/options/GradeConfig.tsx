@@ -4,9 +4,11 @@ import { Chip } from "@nextui-org/react";
 
 import React, { FormEvent } from "react";
 import { toast } from "sonner";
+import { usePassYear } from "./hooks/usePassYear";
 
 function GradeConfig() {
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const { updateYearAlumno, loading } = usePassYear();
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const password = formData.get("password")?.toString();
@@ -15,6 +17,8 @@ function GradeConfig() {
       toast.error("Ingrese la contraseña de seguridad");
       return;
     }
+
+    await updateYearAlumno(password);
   };
   return (
     <div className="p-4">
@@ -40,8 +44,15 @@ function GradeConfig() {
               type="password"
             />
           </div>
-          <div className="flex gap-2 justify-end">
-            <Button type="submit" color="danger">
+          <div className="sm:grid gap-2 grid-cols-4 flex-col">
+            <div className="col-span-3">
+              {loading && (
+                <span className="text-xl text-rose-500 font-bold">
+                  Pasando de grado, esto puede tardar un momento, espere ...
+                </span>
+              )}
+            </div>
+            <Button className="col-span-1" type="submit" color="danger">
               Pasar de grado
             </Button>
           </div>

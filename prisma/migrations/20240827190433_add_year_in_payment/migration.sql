@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE "Payment" ADD COLUMN     "yearId" INTEGER NOT NULL DEFAULT 1;
+
+-- AlterTable
+ALTER TABLE "PaymentConcept" ALTER COLUMN "total" SET DEFAULT ARRAY[]::DECIMAL(65,30)[];
+
+-- AddForeignKey
+ALTER TABLE "Payment" ADD CONSTRAINT "Payment_yearId_fkey" FOREIGN KEY ("yearId") REFERENCES "Year"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

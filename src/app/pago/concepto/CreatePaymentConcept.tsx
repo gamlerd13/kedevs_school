@@ -142,7 +142,7 @@ function CreatePaymentConcept({
           <h3 className="font-medium">Precios</h3>
           <div
             onClick={() => addPrice()}
-            className="text-xl rounded-full bg-slate-200 flex justify-center items-center w-6 h-6 cursor-pointer"
+            className="text-xl rounded-full bg-default flex justify-center items-center w-6 h-6 cursor-pointer"
           >
             <PiPlusBold />
           </div>

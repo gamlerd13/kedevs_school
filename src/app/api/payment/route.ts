@@ -2,10 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/libs/db";
 import { PaymentPost } from "@/models/payment";
 import handlePrismaError from "@/libs/responseApi/handlePrismaError";
+import { getCurrentYear } from "@/libs/year";
+import { Year } from "@prisma/client";
 
 export async function GET(req: NextRequest) {
   try {
+    let currentYear: Year | null = await getCurrentYear();
+    if (!currentYear) throw new Error("Error en establecer año");
+
     const payments = await prisma.payment.findMany({
+      where: {
+        yearId: currentYear.id,
+      },
       orderBy: {
         datePayment: "desc",
       },
@@ -21,6 +29,9 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
+    let currentYear: Year | null = await getCurrentYear();
+    if (!currentYear) throw new Error("Error en establecer año");
+
     const body: PaymentPost = await req.json();
     const {
       alumnoId,
@@ -46,6 +57,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         total: totalPeruvianCurrency,
         comment,
         datePayment: newDatePayment,
+        yearId: currentYear.id,
       },
     });
     if (!newPayment) {
