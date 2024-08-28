@@ -1,8 +1,6 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { toast } from "sonner";
 
-// Should be just 5 prices available
-
 interface useInputProps {
   id: number;
   status: boolean;
@@ -47,6 +45,5 @@ export const useInputPrices = (
       ),
     );
   };
-  console.log(listInputObjectPrices);
   return { addPrice, removePrice };
 };

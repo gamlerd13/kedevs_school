@@ -50,9 +50,9 @@ export const ModalCreatePaymentContext =
 
 // context formulario
 interface CreateEditPayment {
-  addPaymentAlumno(formData: Payment): void;
+  addPaymentAlumno(formData: Payment, alumno: Required<Alumno>): void;
   getAlumnoPayments(idAlumno: number): void;
-  alumno: Alumno | null;
+  alumno: Required<Alumno> | null;
 }
 
 export const FormCreateEditContext = createContext<CreateEditPayment>({
@@ -89,7 +89,6 @@ const AlumnoPage = () => {
         }
       };
       fetchAlumno();
-      getAlumnoPayments(parseInt(id));
     }
   }, [id]);
 

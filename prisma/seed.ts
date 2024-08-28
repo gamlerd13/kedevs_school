@@ -11,8 +11,6 @@ async function main() {
       isDefault: true,
     },
   });
-
-  console.log({ year });
 }
 
 main()

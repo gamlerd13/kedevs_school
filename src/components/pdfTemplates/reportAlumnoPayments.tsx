@@ -115,8 +115,6 @@ const ReactPdfComponent = ({
     return sum + parseFloat(payment.total);
   }, 0);
 
-  console.log(totalPrice);
-
   return (
     <Document style={styles.all}>
       <Page style={styles.page}>

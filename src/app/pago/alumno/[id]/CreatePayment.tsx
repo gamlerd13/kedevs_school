@@ -23,7 +23,7 @@ interface FormErrorsPayment {
 }
 
 interface CreateAlumnoFormProps {
-  addPaymentAlumno: (formData: Payment) => void;
+  addPaymentAlumno: (formData: Payment, alumno: Required<Alumno>) => void;
 }
 
 function CreatePayment({ addPaymentAlumno }: CreateAlumnoFormProps) {
@@ -90,10 +90,14 @@ function CreatePayment({ addPaymentAlumno }: CreateAlumnoFormProps) {
       return;
     }
     if (alumno?.id) {
-      await addPaymentAlumno({
-        ...formData,
-        alumnoId: alumno.id,
-      });
+      await addPaymentAlumno(
+        {
+          ...formData,
+          alumnoId: alumno.id,
+        },
+        alumno,
+      );
+
       await getAlumnoPayments(alumno?.id);
     } else {
       // await updateData({ ...formData, id: initialValueForm?.id });
@@ -124,7 +128,6 @@ function CreatePayment({ addPaymentAlumno }: CreateAlumnoFormProps) {
     }
     return newErrors;
   };
-  console.log(formData);
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex flex-col gap-4">

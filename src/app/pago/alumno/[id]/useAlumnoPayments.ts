@@ -4,14 +4,15 @@ import { Payment, PaymentConcept } from "@/models/payment";
 import { toast } from "sonner";
 import useAxiosErrorHandler from "@/hooks/handleAxiosError";
 import { Alumno } from "@/models/alumno";
-
+import { useThermalPrinterPayment } from "./useThermalPrinterPayment";
+import { useParams } from "next/navigation";
 export type PaymentIncludePaymentConcept = Required<
   Payment & { paymentConcept: PaymentConcept }
 >;
 
 interface PaymentConceptHook {
   getData: (idAlumno: number) => void;
-  addData: (formData: Payment) => void;
+  addData: (formData: Payment, alumno: Required<Alumno>) => void;
 
   payments: PaymentIncludePaymentConcept[];
   //   addData: (formData: FormDataPaymentConcept) => void;
@@ -20,6 +21,9 @@ interface PaymentConceptHook {
 
 export const useAlumnoPayment = (): PaymentConceptHook => {
   const { handleAxiosError } = useAxiosErrorHandler();
+  const { handlePrintUsb } = useThermalPrinterPayment();
+  const { id }: { id: string } = useParams();
+
   const [payments, setPayments] = useState<PaymentIncludePaymentConcept[]>([]);
 
   const getData = async (idAlumno: number) => {
@@ -33,18 +37,29 @@ export const useAlumnoPayment = (): PaymentConceptHook => {
     }
   };
 
-  const addData = async (formData: Payment) => {
+  const addData = async (formData: Payment, alumno: Required<Alumno>) => {
     try {
       const response = await axios.post("/api/payment/", formData);
       if (response.status == 201) {
         toast.success("Pago realizado Exitosamente");
-        // getData();
+
+        if (id) {
+          await getData(parseInt(id));
+        }
+        if (payments.length > 0) {
+          await handlePrintUsb(alumno, payments);
+        }
+        //
       }
     } catch (error) {
       handleAxiosError(error, "Pagos", "Crear");
     }
   };
-
+  useEffect(() => {
+    if (id) {
+      getData(parseInt(id));
+    }
+  }, [id]);
   return {
     payments,
     getData,

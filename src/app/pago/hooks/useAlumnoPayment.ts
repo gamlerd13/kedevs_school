@@ -32,7 +32,6 @@ export default function useAlumnoPayment<T>(): DataFetch<T> {
         setIsLoading(false);
         setData(res.data);
       }
-      console.log(res);
     } catch (error) {
       setIsLoading(false);
       setError(error as Error);

@@ -17,7 +17,6 @@ export async function yearMiddleware(request: NextRequest) {
   const url = request.nextUrl;
   const year = url.searchParams.get("year");
 
-  console.log("Año desde le midleware");
   let yearData;
 
   if (year) {
@@ -61,16 +60,12 @@ export async function middleware(
   const authResponse = await authMiddleware(request, event);
 
   // Si la autenticación falla, retornar la respuesta de autenticación
-  console.log(authResponse?.status);
   if (authResponse?.status !== 200) {
-    console.log("xd", authResponse);
-
     return authResponse;
   }
 
-  console.log("nunca entra");
   // Ejecutar el middleware de año después de la autenticación
-  return yearMiddleware(request);
+  // return yearMiddleware(request);
 }
 
 export const config = {

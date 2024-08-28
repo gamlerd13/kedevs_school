@@ -66,7 +66,6 @@ function Page() {
   };
 
   const handleOpenModal = ({ isCreate, formData }: CreateEditProps) => {
-    console.log(isCreate, formData);
     if (isCreate && !formData) {
       setIsCreate(true);
       setInitialValueForm(null);

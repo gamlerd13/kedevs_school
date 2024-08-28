@@ -50,7 +50,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
         { error: "Usuario no encontrado" },
         { status: 404 },
       );
-    console.log(userDB);
     const matchPassword = await compare(password, userDB.password);
     if (!matchPassword)
       return NextResponse.json(
