@@ -24,6 +24,7 @@ import { AlumnoPayment, Payment, PaymentConcept } from "@/models/payment";
 import { Grade, Section } from "@prisma/client";
 import { gradeLabels, sectionLabels } from "@/models/alumno";
 import ButtonBackArrow from "@/components/ButtonBackArrow";
+import { useThermalPrinterPayment } from "./useThermalPrinterPayment";
 
 interface PaymentsAlumno {
   payment: Required<PaymentConcept>;
@@ -50,7 +51,7 @@ export const ModalCreatePaymentContext =
 
 // context formulario
 interface CreateEditPayment {
-  addPaymentAlumno(formData: Payment, alumno: Required<Alumno>): void;
+  addPaymentAlumno(formData: Payment): void;
   getAlumnoPayments(idAlumno: number): void;
   alumno: Required<Alumno> | null;
 }
@@ -65,6 +66,8 @@ export const ConceptPaymentSelectedContext =
   createContext<Required<PaymentConcept> | null>(null);
 
 const AlumnoPage = () => {
+  const { handlePrintUsb } = useThermalPrinterPayment();
+
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const {
     payments: paymentsAlumno,
@@ -120,6 +123,9 @@ const AlumnoPage = () => {
     }
   }, [conceptPayments, paymentsAlumno]);
 
+  const handleThermalPrinter = () => {
+    if (alumno) handlePrintUsb(alumno, paymentsAlumno);
+  };
   if (!id) return;
   if (!alumno) return <Loading />;
 
@@ -140,24 +146,34 @@ const AlumnoPage = () => {
                 <div>
                   <ButtonBackArrow />
                 </div>
-                <div className="flex justify-between items-center">
+                <div className="flex flex-wrap items-center grid-cols-3 justify-between">
                   <TitlePage title="Datos Alumno" />
                   {alumno && paymentsRelationAlumno && (
-                    <PDFDownloadLink
-                      document={
-                        <ReactPdfComponent
-                          alumno={alumno}
-                          paymentsAlumno={paymentsAlumno}
-                          paymentsRelationAlumno={paymentsRelationAlumno}
-                        />
-                      }
-                      fileName={`reporte-${alumno.dni}.pdf`}
-                    >
-                      <Button href="" className="bg-red-900 text-white">
-                        Generar reporte de Pagos
+                    <div className="col-span-2 flex flex-wrap gap-2">
+                      <Button
+                        className="bg-red-900 text-white"
+                        onClick={() => handleThermalPrinter()}
+                      >
+                        Imprimir Pagos
                         <BsFillFileEarmarkPdfFill />
                       </Button>
-                    </PDFDownloadLink>
+
+                      <PDFDownloadLink
+                        document={
+                          <ReactPdfComponent
+                            alumno={alumno}
+                            paymentsAlumno={paymentsAlumno}
+                            paymentsRelationAlumno={paymentsRelationAlumno}
+                          />
+                        }
+                        fileName={`reporte-${alumno.dni}.pdf`}
+                      >
+                        <Button href="" className="bg-red-900 text-white">
+                          Generar reporte de Pagos
+                          <BsFillFileEarmarkPdfFill />
+                        </Button>
+                      </PDFDownloadLink>
+                    </div>
                   )}
                 </div>
 

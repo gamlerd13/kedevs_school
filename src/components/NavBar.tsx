@@ -63,7 +63,7 @@ export default function NavBar() {
           className="sm:hidden"
         />
         <Link href="/" aria-current="page">
-          <NavbarBrand>
+          <NavbarBrand className="flex gap-x-2">
             <Image
               alt="logo"
               isBlurred

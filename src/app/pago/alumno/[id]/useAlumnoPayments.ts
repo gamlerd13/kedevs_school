@@ -12,7 +12,7 @@ export type PaymentIncludePaymentConcept = Required<
 
 interface PaymentConceptHook {
   getData: (idAlumno: number) => void;
-  addData: (formData: Payment, alumno: Required<Alumno>) => void;
+  addData: (formData: Payment) => void;
 
   payments: PaymentIncludePaymentConcept[];
   //   addData: (formData: FormDataPaymentConcept) => void;
@@ -21,7 +21,6 @@ interface PaymentConceptHook {
 
 export const useAlumnoPayment = (): PaymentConceptHook => {
   const { handleAxiosError } = useAxiosErrorHandler();
-  const { handlePrintUsb } = useThermalPrinterPayment();
   const { id }: { id: string } = useParams();
 
   const [payments, setPayments] = useState<PaymentIncludePaymentConcept[]>([]);
@@ -37,19 +36,14 @@ export const useAlumnoPayment = (): PaymentConceptHook => {
     }
   };
 
-  const addData = async (formData: Payment, alumno: Required<Alumno>) => {
+  const addData = async (formData: Payment) => {
     try {
       const response = await axios.post("/api/payment/", formData);
       if (response.status == 201) {
         toast.success("Pago realizado Exitosamente");
-
         if (id) {
           await getData(parseInt(id));
         }
-        if (payments.length > 0) {
-          await handlePrintUsb(alumno, payments);
-        }
-        //
       }
     } catch (error) {
       handleAxiosError(error, "Pagos", "Crear");
