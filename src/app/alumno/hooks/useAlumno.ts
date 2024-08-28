@@ -31,9 +31,8 @@ export default function useAlumno<T>(): DataFetch<T> {
 
   const addData = async (formData: FormData) => {
     try {
-      const response = await axios.post("/api/alumno/", formData);
-      console.log(response);
-      if (response.statusText == "OK") {
+      const { status } = await axios.post("/api/alumno/", formData);
+      if (status == 201) {
         toast.success("Alumno creado con éxito");
         getData();
       }
