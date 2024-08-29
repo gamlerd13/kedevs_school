@@ -56,7 +56,7 @@ function Page() {
             <p className="">Gestiona los pagos de los estudiantes</p>
           </Link>
           <Link
-            href="/alumnos"
+            href="/alumno"
             className="block bg-default shadow-md rounded-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
           >
             <h2 className="text-xl font-bold mb-2">Alumnos</h2>
