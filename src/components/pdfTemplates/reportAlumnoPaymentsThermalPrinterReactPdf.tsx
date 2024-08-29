@@ -71,7 +71,7 @@ const ThermalPrinterComponent = ({
     return sum + parseFloat(payment.total);
   }, 0);
 
-  const tamaño = 400 + 30 * items;
+  const tamaño = 420 + 30 * items;
   return (
     <Document>
       <Page size={[226.77, tamaño]} style={styles.page}>
