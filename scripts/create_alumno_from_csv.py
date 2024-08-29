@@ -6,4 +6,5 @@ def create_data ():
 
 #Comando para en sql(postgres) para convertir csv en datos sql
 
-\COPY Alumno(grade, seccion, dni, fullName) FROM 'archivo.csv' DELIMITER ',' CSV HEADER;
+\COPY Alumno(grade, section, dni, fullName) FROM '/root/colegio/scripts/initial_value.csv' DELIMITER ',' CSV HEADER;
+

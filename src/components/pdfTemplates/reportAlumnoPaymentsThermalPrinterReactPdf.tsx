@@ -87,9 +87,8 @@ const ThermalPrinterComponent = ({
             ]}
           >
             <Image
-              style={[{ textAlign: "center", width: "100%" }]}
+              style={[{ textAlign: "center", width: 60, height: 60 }]}
               src="/logo-colegio.jpeg"
-              style={{ width: 60, height: 60 }}
             />
           </View>
 
