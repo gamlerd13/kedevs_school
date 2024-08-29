@@ -109,7 +109,7 @@ const ThermalPrinterComponent = ({
           <Text>H. EMISIÓN: {hour}</Text>
           <View style={styles.line} />
           <Text style={[styles.boldText, { paddingBottom: 5 }]}>
-            INFORMACION DEL ESTUDIANTE
+            INFORMACIÓN DEL ESTUDIANTE
           </Text>
           <Text>NOMBRE: {alumno.fullName}</Text>
           <Text>GRADO: {gradeLabels[alumno.grade as Grade]}</Text>

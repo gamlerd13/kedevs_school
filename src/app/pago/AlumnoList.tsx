@@ -104,38 +104,39 @@ function AlumnoListComponent() {
           <TableColumn>Último Pago</TableColumn>
           <TableColumn>Acciones</TableColumn>
         </TableHeader>
-        <TableBody items={items}>
-          {(alumno) => (
-            <TableRow key={alumno.id}>
-              <TableCell>{alumno.id}</TableCell>
-              <TableCell>
-                <div className="list-disc list-inside font-medium">
-                  {alumno.fullName}
-                </div>
-                <div className="list-disc list-inside text-blue-700">
-                  {alumno.dni}
-                </div>
-              </TableCell>
-              <TableCell>
-                {alumno.payments.length ? (
-                  <div className="flex flex-col">
-                    <span>{alumno.payments[0]?.paymentConcept.name}</span>
-                    <Chip color="success" size="sm">
-                      {`s/. ${alumno.payments[0]?.total}`}
-                    </Chip>
+        <TableBody>
+          {items &&
+            items.map((alumno, index) => (
+              <TableRow key={alumno.id}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>
+                  <div className="list-disc list-inside font-medium">
+                    {alumno.fullName}
                   </div>
-                ) : (
-                  <Chip color="danger" size="sm" variant="bordered">
-                    --
-                  </Chip>
-                )}
-              </TableCell>
-              {/* <TableCell>
+                  <div className="list-disc list-inside text-blue-700">
+                    {alumno.dni}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  {alumno.payments.length ? (
+                    <div className="flex flex-col">
+                      <span>{alumno.payments[0]?.paymentConcept.name}</span>
+                      <Chip color="success" size="sm">
+                        {`s/. ${alumno.payments[0]?.total}`}
+                      </Chip>
+                    </div>
+                  ) : (
+                    <Chip color="danger" size="sm" variant="bordered">
+                      --
+                    </Chip>
+                  )}
+                </TableCell>
+                {/* <TableCell>
                 {gradeLabels[alumno.grade]} - {sectionLabels[alumno.section]}
               </TableCell> */}
-              <TableCell>
-                <div className="text-md mobile:flex">
-                  {/* <Button
+                <TableCell>
+                  <div className="text-md mobile:flex">
+                    {/* <Button
                     type="button"
                     className="flex bg-green-700 text-white p-0"
                     onClick={() =>
@@ -148,18 +149,18 @@ function AlumnoListComponent() {
                     <FaMoneyBillWave />
                     Pagar
                   </Button> */}
-                  <Link href={`/pago/alumno/${alumno.id}`}>
-                    <button
-                      type="button"
-                      className="flex rounded-lg p-2 bg-default h-full justify-center items-center"
-                    >
-                      Detalles
-                    </button>
-                  </Link>
-                </div>
-              </TableCell>
-            </TableRow>
-          )}
+                    <Link href={`/pago/alumno/${alumno.id}`}>
+                      <button
+                        type="button"
+                        className="flex rounded-lg p-2 bg-default h-full justify-center items-center"
+                      >
+                        Detalles
+                      </button>
+                    </Link>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </>

@@ -100,37 +100,38 @@ function AlumnoListV2() {
           <TableColumn>Acciones</TableColumn>
         </TableHeader>
         <TableBody items={items}>
-          {(alumno) => (
-            <TableRow key={alumno.id}>
-              <TableCell>{alumno.id}</TableCell>
-              <TableCell>{alumno.fullName}</TableCell>
-              <TableCell>{alumno.dni}</TableCell>
-              <TableCell>
-                {gradeLabels[alumno.grade]} - {sectionLabels[alumno.section]}
-              </TableCell>
-              <TableCell>
-                <div className="relative flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleOpenModal({
-                        isCreate: false,
-                        formData: {
-                          id: alumno.id,
-                          fullName: alumno.fullName,
-                          dni: alumno.dni,
-                          grade: alumno.grade,
-                          section: alumno.section,
-                        },
-                      })
-                    }
-                  >
-                    <ToolTipEdit name={alumno.fullName} />
-                  </button>
-                </div>
-              </TableCell>
-            </TableRow>
-          )}
+          {items &&
+            items.map((alumno, index) => (
+              <TableRow key={alumno.id}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>{alumno.fullName}</TableCell>
+                <TableCell>{alumno.dni}</TableCell>
+                <TableCell>
+                  {gradeLabels[alumno.grade]} - {sectionLabels[alumno.section]}
+                </TableCell>
+                <TableCell>
+                  <div className="relative flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleOpenModal({
+                          isCreate: false,
+                          formData: {
+                            id: alumno.id,
+                            fullName: alumno.fullName,
+                            dni: alumno.dni,
+                            grade: alumno.grade,
+                            section: alumno.section,
+                          },
+                        })
+                      }
+                    >
+                      <ToolTipEdit name={alumno.fullName} />
+                    </button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </>
