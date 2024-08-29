@@ -164,7 +164,6 @@ const ReactPdfComponent = ({
               <View style={styles.staticInformation}>
                 <Text>GRADO: {gradeLabels[alumno.grade as Grade]}</Text>
                 <Text>SECCIÓN: {sectionLabels[alumno.section as Section]}</Text>
-                <Text>PADRE DE FAMILIA: </Text>
                 <Text>DNI: {alumno.dni} </Text>
               </View>
             </View>

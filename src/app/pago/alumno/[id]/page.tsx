@@ -25,6 +25,7 @@ import { Grade, Section } from "@prisma/client";
 import { gradeLabels, sectionLabels } from "@/models/alumno";
 import ButtonBackArrow from "@/components/ButtonBackArrow";
 import { useThermalPrinterPayment } from "./useThermalPrinterPayment";
+import ThermalPrinterComponent from "@/components/pdfTemplates/reportAlumnoPaymentsThermalPrinterReactPdf";
 
 interface PaymentsAlumno {
   payment: Required<PaymentConcept>;
@@ -150,13 +151,20 @@ const AlumnoPage = () => {
                   <TitlePage title="Datos Alumno" />
                   {alumno && paymentsRelationAlumno && (
                     <div className="col-span-2 flex flex-wrap gap-2">
-                      <Button
-                        className="bg-red-900 text-white"
-                        onClick={() => handleThermalPrinter()}
+                      <PDFDownloadLink
+                        document={
+                          <ThermalPrinterComponent
+                            alumno={alumno}
+                            paymentsAlumno={paymentsAlumno}
+                          />
+                        }
+                        fileName={`reporte-${alumno.dni}.pdf`}
                       >
-                        Imprimir Pagos
-                        <BsFillFileEarmarkPdfFill />
-                      </Button>
+                        <Button className="bg-red-900 text-white" href="">
+                          Imprimir Pagos
+                          <BsFillFileEarmarkPdfFill />
+                        </Button>
+                      </PDFDownloadLink>
 
                       <PDFDownloadLink
                         document={
