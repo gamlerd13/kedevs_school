@@ -58,6 +58,9 @@ export const paymentMethods = [
   "SCOTIABANK",
   "INTERBANK",
   "EFECTIVO",
+  "BOLETA",
+  "RECIBO_INTERNO",
+  "AGENTE",
   "OTRO",
 ];
 
@@ -94,3 +97,7 @@ export type FormErrorsPaymentConcept = {
   nameError: string;
   totalError: string;
 };
+
+export type PaymentIncludePaymentConcept = {
+  correlativeCode?: string; //fast fix
+} & Required<Payment & { paymentConcept: PaymentConcept }>;

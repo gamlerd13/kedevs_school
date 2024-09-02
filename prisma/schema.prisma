@@ -69,6 +69,9 @@ enum PaymentMethod {
   SCOTIABANK
   INTERBANK
   EFECTIVO
+  BOLETA
+  RECIBO_INTERNO
+  AGENTE
   OTRO
 }
 
@@ -90,6 +93,7 @@ model Payment {
   paymentMethod    PaymentMethod  @default(YAPE)
   datePayment      DateTime       @default(now())
   codePayment      String         @unique
+  correlativeCode  String         @default("000001")
   comment          String?
   total            Decimal
 
@@ -102,4 +106,9 @@ model Year {
   year      Int       @unique
   isDefault Boolean   @default(false)
   Payment   Payment[]
+}
+
+model CorrelativeCode {
+  id        Int @id @default(autoincrement())
+  nextValue Int @default(0)
 }

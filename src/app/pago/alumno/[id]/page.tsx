@@ -20,66 +20,87 @@ import ReactPdfComponent from "@/components/pdfTemplates/reportAlumnoPaymentsv2"
 import { usePaymentConcept } from "../../concepto/hooks/usePaymentConcept";
 import { useAlumnoPayment } from "./useAlumnoPayments";
 
-import { AlumnoPayment, Payment, PaymentConcept } from "@/models/payment";
+import {
+  AlumnoPayment,
+  Payment,
+  PaymentConcept,
+  PaymentIncludePaymentConcept,
+} from "@/models/payment";
 import { Grade, Section } from "@prisma/client";
 import { gradeLabels, sectionLabels } from "@/models/alumno";
 import ButtonBackArrow from "@/components/ButtonBackArrow";
 import { useThermalPrinterPayment } from "./useThermalPrinterPayment";
 import ThermalPrinterComponent from "@/components/pdfTemplates/reportAlumnoPaymentsThermalPrinterReactPdf";
+import { MdEdit } from "react-icons/md";
+import BoletaThermalPrinterComponent from "@/components/pdfTemplates/BoletaAlumnoPaymentsThermalPrinterReactPdf";
 
 interface PaymentsAlumno {
-  payment: Required<PaymentConcept>;
+  paymentConcept: Required<PaymentConcept>;
   payed: boolean;
   total: string;
+  payment: PaymentIncludePaymentConcept | null;
 }
 
 //context modal
-interface ModalCreatePaymentContext {
+interface ModalCreateUpdatePaymentContext {
   isOpen: boolean;
   onOpen: () => void;
   onOpenChange: () => void;
   onClose: () => void;
 }
 
-const initialModalContext: ModalCreatePaymentContext = {
+const initialModalContext: ModalCreateUpdatePaymentContext = {
   isOpen: false,
   onOpen: () => {},
   onOpenChange: () => {},
   onClose: () => {},
 };
-export const ModalCreatePaymentContext =
-  createContext<ModalCreatePaymentContext>(initialModalContext);
+export const ModalCreateUpdatePaymentContext =
+  createContext<ModalCreateUpdatePaymentContext>(initialModalContext);
 
 // context formulario
 interface CreateEditPayment {
   addPaymentAlumno(formData: Payment): void;
+  updatePaymentAlumno(formDataUpdate: Required<Payment>): void;
   getAlumnoPayments(idAlumno: number): void;
   alumno: Required<Alumno> | null;
 }
 
 export const FormCreateEditContext = createContext<CreateEditPayment>({
   addPaymentAlumno: () => {},
+  updatePaymentAlumno: () => {},
   getAlumnoPayments: () => {},
   alumno: null,
 });
 
+// data in create payment, conceptPayment needed
 export const ConceptPaymentSelectedContext =
   createContext<Required<PaymentConcept> | null>(null);
 
-const AlumnoPage = () => {
-  const { handlePrintUsb } = useThermalPrinterPayment();
+// data in update payment, PaymentIncludePaymentConcept needed
+export const paymentSelectedContext =
+  createContext<PaymentIncludePaymentConcept | null>(null);
 
+const AlumnoPage = () => {
+  const { id }: { id: string } = useParams();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const {
     payments: paymentsAlumno,
     getData: getAlumnoPayments,
     addData: addPaymentAlumno,
+    updateData: updatePaymentAlumno,
   } = useAlumnoPayment();
-  const { id }: { id: string } = useParams();
+  const [isEdit, setIsEdit] = useState<Boolean>(false);
   const [alumno, setAlumno] = useState<Required<Alumno> | null>(null);
   const { conceptPayments } = usePaymentConcept();
+
+  //To create
   const [conceptPaymentSelected, setConceptPaymentSelected] =
     useState<Required<PaymentConcept> | null>(null);
+  //To edit
+  const [paymentSelectedEdit, setPaymentSelectedEdit] =
+    useState<PaymentIncludePaymentConcept | null>(null);
+
   const [paymentsRelationAlumno, setPaymentsRelationAlumno] = useState<
     PaymentsAlumno[] | null
   >(null);
@@ -100,21 +121,23 @@ const AlumnoPage = () => {
   useEffect(() => {
     if (conceptPayments && paymentsAlumno) {
       const paymentsAlumnoMap: PaymentsAlumno[] = conceptPayments.map(
-        (payment) => {
+        (paymentConcept) => {
           const findPayment = paymentsAlumno.find(
-            (concepto) => concepto.paymentConceptId === payment.id,
+            (concepto) => concepto.paymentConceptId === paymentConcept.id,
           );
           if (findPayment) {
             return {
-              payment: payment,
+              paymentConcept: paymentConcept,
               payed: true,
               total: findPayment.total,
+              payment: findPayment,
             };
           } else {
             return {
-              payment: payment,
+              paymentConcept: paymentConcept,
               payed: false,
               total: "00.00",
+              payment: null,
             };
           }
         },
@@ -124,125 +147,140 @@ const AlumnoPage = () => {
     }
   }, [conceptPayments, paymentsAlumno]);
 
-  const handleThermalPrinter = () => {
-    if (alumno) handlePrintUsb(alumno, paymentsAlumno);
-  };
   if (!id) return;
   if (!alumno) return <Loading />;
 
   return (
     <>
-      <ModalCreatePaymentContext.Provider
+      <ModalCreateUpdatePaymentContext.Provider
         value={{ isOpen, onOpen, onOpenChange, onClose }}
       >
         <FormCreateEditContext.Provider
-          value={{ addPaymentAlumno, getAlumnoPayments, alumno }}
+          value={{
+            addPaymentAlumno,
+            updatePaymentAlumno,
+            getAlumnoPayments,
+            alumno,
+          }}
         >
           <ConceptPaymentSelectedContext.Provider
             value={conceptPaymentSelected}
           >
-            <ModalFormPaymentAlumno />
-            <div className="w-full">
-              <div className="sm:w-10/12 w-11/12  mx-auto flex flex-col">
-                <div>
-                  <ButtonBackArrow />
-                </div>
-                <div className="flex flex-wrap items-center grid-cols-3 justify-between">
-                  <TitlePage title="Datos Alumno" />
-                  {alumno && paymentsRelationAlumno && (
-                    <div className="col-span-2 flex flex-wrap gap-2">
-                      <PDFDownloadLink
-                        document={
-                          <ThermalPrinterComponent
-                            alumno={alumno}
-                            paymentsAlumno={paymentsAlumno}
-                          />
-                        }
-                        fileName={`reporte-${alumno.dni}.pdf`}
-                      >
-                        <Button className="bg-red-900 text-white" href="">
-                          Imprimir Pagos
-                          <BsFillFileEarmarkPdfFill />
-                        </Button>
-                      </PDFDownloadLink>
+            <paymentSelectedContext.Provider value={paymentSelectedEdit}>
+              <ModalFormPaymentAlumno isEdit={isEdit} />
+              <div className="w-full">
+                <div className="sm:w-10/12 w-11/12  mx-auto flex flex-col">
+                  <div>
+                    <ButtonBackArrow />
+                  </div>
+                  <div className="flex flex-wrap items-center grid-cols-3 justify-between">
+                    <TitlePage title="Datos Alumno" />
+                    {alumno && paymentsRelationAlumno && (
+                      <div className="col-span-2 flex flex-wrap gap-2">
+                        <PDFDownloadLink
+                          document={
+                            <ThermalPrinterComponent
+                              alumno={alumno}
+                              paymentsAlumno={paymentsAlumno}
+                            />
+                          }
+                          fileName={`boleta-${alumno.dni}.pdf`}
+                        >
+                          <Button className="bg-red-900 text-white" href="">
+                            Imprimir Pagos
+                            <BsFillFileEarmarkPdfFill />
+                          </Button>
+                        </PDFDownloadLink>
 
-                      <PDFDownloadLink
-                        document={
-                          <ReactPdfComponent
-                            alumno={alumno}
-                            paymentsAlumno={paymentsAlumno}
-                            paymentsRelationAlumno={paymentsRelationAlumno}
-                          />
-                        }
-                        fileName={`reporte-${alumno.dni}.pdf`}
-                      >
-                        <Button href="" className="bg-red-900 text-white">
-                          Generar reporte de Pagos
-                          <BsFillFileEarmarkPdfFill />
-                        </Button>
-                      </PDFDownloadLink>
+                        <PDFDownloadLink
+                          document={
+                            <ReactPdfComponent
+                              alumno={alumno}
+                              paymentsAlumno={paymentsAlumno}
+                              paymentsRelationAlumno={paymentsRelationAlumno}
+                            />
+                          }
+                          fileName={`reporte-${alumno.dni}.pdf`}
+                        >
+                          <Button href="" className="bg-red-900 text-white">
+                            Generar reporte de Pagos
+                            <BsFillFileEarmarkPdfFill />
+                          </Button>
+                        </PDFDownloadLink>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="grid sm:grid-cols-4  grid-cols-1 gap-2 ">
+                    <Input label="Nombres" value={alumno.fullName} />
+                    <Input label="DNI" value={alumno.dni} />
+                    <Input
+                      label="Grado"
+                      value={gradeLabels[alumno.grade as Grade]}
+                    />
+                    <Input
+                      label="Sección"
+                      value={sectionLabels[alumno.section as Section]}
+                    />
+                  </div>
+                  <SubTitlePage subTitle="Pagos" />
+
+                  <div>
+                    <div
+                      className="grid gap-4 auto-rows-auto"
+                      style={{
+                        gridTemplateColumns:
+                          "repeat(auto-fit, minmax(150px, 1fr))",
+                      }}
+                    >
+                      {paymentsRelationAlumno &&
+                        paymentsRelationAlumno.map(
+                          (paymentRelationAlumno, index) => (
+                            <ListPaymentConcept
+                              key={paymentRelationAlumno.paymentConcept.id}
+                              alumno={alumno}
+                              paymentRelationAlumno={paymentRelationAlumno}
+                              setConceptPaymentSelected={
+                                setConceptPaymentSelected
+                              }
+                              setIsEdit={setIsEdit}
+                              setPaymentSelectedEdit={setPaymentSelectedEdit}
+                            />
+                          ),
+                        )}
                     </div>
-                  )}
-                </div>
-
-                <div className="grid sm:grid-cols-4  grid-cols-1 gap-2 ">
-                  <Input label="Nombres" value={alumno.fullName} />
-                  <Input label="DNI" value={alumno.dni} />
-                  <Input
-                    label="Grado"
-                    value={gradeLabels[alumno.grade as Grade]}
-                  />
-                  <Input
-                    label="Sección"
-                    value={sectionLabels[alumno.section as Section]}
-                  />
-                </div>
-                <SubTitlePage subTitle="Pagos" />
-
-                <div>
-                  <div
-                    className="grid gap-4 auto-rows-auto"
-                    style={{
-                      gridTemplateColumns:
-                        "repeat(auto-fit, minmax(150px, 1fr))",
-                    }}
-                  >
-                    {paymentsRelationAlumno &&
-                      paymentsRelationAlumno.map(
-                        (paymentRelationAlumno, index) => (
-                          <ListPaymentConcept
-                            key={paymentRelationAlumno.payment.id}
-                            paymentRelationAlumno={paymentRelationAlumno}
-                            setConceptPaymentSelected={
-                              setConceptPaymentSelected
-                            }
-                          />
-                        ),
-                      )}
                   </div>
                 </div>
               </div>
-            </div>
+            </paymentSelectedContext.Provider>
           </ConceptPaymentSelectedContext.Provider>
         </FormCreateEditContext.Provider>
-      </ModalCreatePaymentContext.Provider>
+      </ModalCreateUpdatePaymentContext.Provider>
     </>
   );
 };
 
 const ListPaymentConcept = ({
   paymentRelationAlumno,
+  alumno,
   setConceptPaymentSelected,
+  setIsEdit,
+  setPaymentSelectedEdit,
 }: {
   paymentRelationAlumno: PaymentsAlumno;
+  alumno: Required<Alumno>;
   setConceptPaymentSelected: (PaymentConcept: Required<PaymentConcept>) => void;
+  setIsEdit: (isEdit: Boolean) => void; //Dispatch<SetStateAction<Boolean>>
+  setPaymentSelectedEdit: (
+    paymentSelectedEdit: PaymentIncludePaymentConcept | null,
+  ) => void;
 }) => {
-  const { onOpen } = useContext(ModalCreatePaymentContext);
+  const { onOpen } = useContext(ModalCreateUpdatePaymentContext);
   return (
     <Card className="">
       <CardHeader>
         <h1 className="font-medium text-default-600">
-          {paymentRelationAlumno.payment.name}
+          {paymentRelationAlumno.paymentConcept.name}
         </h1>
       </CardHeader>
       <CardBody>
@@ -255,15 +293,46 @@ const ListPaymentConcept = ({
         }
       >
         {paymentRelationAlumno.payed ? (
-          <div className="w-full flex justify-between items-center text-white">
-            <div className="bg-green-500">Pagado</div>
-            <FaCheck className="text-xl" />
+          <div className="w-full items-center text-white">
+            <div className="bg-green-500 text-sm">Pagado</div>
+            <div className="flex justify-between ">
+              <div
+                onClick={() => {
+                  setIsEdit(true);
+                  setPaymentSelectedEdit(paymentRelationAlumno.payment);
+                  setConceptPaymentSelected(
+                    paymentRelationAlumno.paymentConcept,
+                  );
+
+                  onOpen();
+                }}
+                className="cursor-pointer rounded-full hover:bg-slate-500 p-2"
+              >
+                <MdEdit className="text-xl" />
+              </div>
+              <div>
+                <PDFDownloadLink
+                  document={
+                    <BoletaThermalPrinterComponent
+                      alumno={alumno}
+                      payment={paymentRelationAlumno.payment}
+                    />
+                  }
+                  fileName={`boleta-${alumno.dni}.pdf`}
+                >
+                  <div className="cursor-pointer rounded-full hover:bg-slate-500 p-2">
+                    <BsFillFileEarmarkPdfFill className="text-xl " />
+                  </div>
+                </PDFDownloadLink>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="w-full flex justify-between items-center text-white">
             <Button
               onClick={() => {
-                setConceptPaymentSelected(paymentRelationAlumno.payment);
+                setIsEdit(false);
+                setConceptPaymentSelected(paymentRelationAlumno.paymentConcept);
                 onOpen();
               }}
               className=" hover:bg-blue-600 hover:text-white"

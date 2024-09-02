@@ -43,6 +43,22 @@ export async function POST(req: NextRequest, res: NextResponse) {
       datePayment,
     } = body;
 
+    let codigoCorrelativo: string = "000001"; // max 6 length
+    let correlativeCode = await prisma.correlativeCode.findFirst();
+    if (correlativeCode) {
+      const valueSize = correlativeCode.nextValue.toString().length;
+      codigoCorrelativo =
+        codigoCorrelativo.slice(0, -valueSize) +
+        correlativeCode.nextValue.toString();
+    } else {
+      //create firts
+      correlativeCode = await prisma.correlativeCode.create({
+        data: {
+          nextValue: 1,
+        },
+      });
+    }
+
     let newDatePayment = datePayment;
     if (!datePayment || isNaN(new Date(datePayment).getTime())) {
       newDatePayment = new Date().toISOString();
@@ -58,11 +74,25 @@ export async function POST(req: NextRequest, res: NextResponse) {
         comment,
         datePayment: newDatePayment,
         yearId: currentYear.id,
+        correlativeCode: codigoCorrelativo,
       },
     });
     if (!newPayment) {
       throw new Error("No se pudo crear el pago");
     }
+
+    //update correlative
+    if (correlativeCode) {
+      await prisma.correlativeCode.update({
+        where: {
+          id: correlativeCode.id,
+        },
+        data: {
+          nextValue: correlativeCode.nextValue + 1,
+        },
+      });
+    }
+
     return NextResponse.json(newPayment, { status: 201 });
   } catch (error) {
     return handlePrismaError(error);

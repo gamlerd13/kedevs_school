@@ -17,7 +17,7 @@ export type PaymentIncludePaymentConcept = Required<
   Payment & { paymentConcept: PaymentConcept }
 >;
 interface paymentsAlumno {
-  payment: Required<PaymentConcept>;
+  paymentConcept: Required<PaymentConcept>;
   payed: boolean;
 }
 
@@ -244,7 +244,10 @@ const ReactPdfComponent = ({
                 color: "#767f7e",
               }}
             >
-              <Text>PAGOS PENDIENTES</Text>
+              <Text>
+                PAGOS PENDIENTES{" "}
+                <Text style={{ color: "red", fontWeight: 700 }}> (DEBE)</Text>
+              </Text>
             </View>
 
             {/* Table no pagado */}
@@ -282,7 +285,7 @@ const ReactPdfComponent = ({
                         { flexDirection: "column", flex: 5 },
                       ]}
                     >
-                      <Text>{payment.payment.name}</Text>
+                      <Text>{payment.paymentConcept.name}</Text>
                     </View>
                     <Text
                       style={[styles.tableCell, styles.cellFlex, { flex: 2 }]}

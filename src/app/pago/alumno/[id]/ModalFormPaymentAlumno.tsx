@@ -1,14 +1,19 @@
 "use client";
+import { useContext } from "react";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@nextui-org/modal";
-import React, { useContext } from "react";
+import { Divider } from "@nextui-org/divider";
 import CreatePayment from "./CreatePayment";
-import { FormCreateEditContext, ModalCreatePaymentContext } from "./page";
+import { FormCreateEditContext, ModalCreateUpdatePaymentContext } from "./page";
+import UpdatePayment from "./UpdatePayment";
 
-function ModalFormPaymentAlumno() {
+function ModalFormPaymentAlumno({ isEdit }: { isEdit: Boolean }) {
   const { isOpen, onOpen, onOpenChange, onClose } = useContext(
-    ModalCreatePaymentContext,
+    ModalCreateUpdatePaymentContext,
   );
-  const { addPaymentAlumno, alumno } = useContext(FormCreateEditContext);
+
+  const { addPaymentAlumno, updatePaymentAlumno, alumno } = useContext(
+    FormCreateEditContext,
+  );
 
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -16,14 +21,19 @@ function ModalFormPaymentAlumno() {
         {(onClose) => (
           <>
             <ModalHeader>
-              <div className="flex flex-col">
-                <h1>Pago</h1>
+              <div className="flex flex-col w-full">
+                <h1>{isEdit ? "Editar" : "Crear"} Pago</h1>
+                <Divider />
                 <span className="text-sm">{alumno?.fullName}</span>
                 <span className="text-[12px] font-light">{alumno?.dni}</span>
               </div>
             </ModalHeader>
             <ModalBody>
-              <CreatePayment addPaymentAlumno={addPaymentAlumno} />
+              {isEdit ? (
+                <UpdatePayment updatePaymentAlumno={updatePaymentAlumno} />
+              ) : (
+                <CreatePayment addPaymentAlumno={addPaymentAlumno} />
+              )}
             </ModalBody>
           </>
         )}

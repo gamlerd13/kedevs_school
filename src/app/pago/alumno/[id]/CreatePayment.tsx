@@ -7,13 +7,14 @@ import { Alumno } from "@/models/alumno";
 import {
   ConceptPaymentSelectedContext,
   FormCreateEditContext,
-  ModalCreatePaymentContext,
+  ModalCreateUpdatePaymentContext,
 } from "./page";
 import { Payment, PaymentConcept } from "@/models/payment";
 import { usePaymentConcept } from "../../concepto/hooks/usePaymentConcept";
 import { paymentMethods } from "@/models/payment";
 import { DatePicker } from "@nextui-org/react";
 import { CalendarDate, parseDate } from "@internationalized/date";
+import { I18nProvider } from "@react-aria/i18n";
 
 interface FormErrorsPayment {
   paymentConceptId: string;
@@ -38,7 +39,7 @@ function CreatePayment({ addPaymentAlumno }: CreateAlumnoFormProps) {
   );
 
   const { alumno, getAlumnoPayments } = useContext(FormCreateEditContext);
-  const { onClose } = useContext(ModalCreatePaymentContext);
+  const { onClose } = useContext(ModalCreateUpdatePaymentContext);
 
   let initialValuePayment: Payment = {
     total: "",
@@ -145,6 +146,7 @@ function CreatePayment({ addPaymentAlumno }: CreateAlumnoFormProps) {
                   paymentConceptId: parseInt(e.target.value),
                 })
               }
+              isDisabled={true}
             >
               {conceptPayments.map((concept) => (
                 <SelectItem
@@ -222,21 +224,21 @@ function CreatePayment({ addPaymentAlumno }: CreateAlumnoFormProps) {
             }
           />
         </div>
-
-        <DatePicker
-          label="Fecha de pago"
-          value={todayCalendar}
-          name="datePayment"
-          onChange={(date) => {
-            setTodayCalendar(date);
-            setFormData({
-              ...formData,
-              datePayment: new Date(date.toString()).toISOString(),
-            });
-          }}
-          className="w-full"
-        />
-
+        <I18nProvider locale="es">
+          <DatePicker
+            label="Fecha de pago"
+            value={todayCalendar}
+            name="datePayment"
+            onChange={(date) => {
+              setTodayCalendar(date);
+              setFormData({
+                ...formData,
+                datePayment: new Date(date.toString()).toISOString(),
+              });
+            }}
+            className="w-full"
+          />
+        </I18nProvider>
         <Input
           type="text"
           name="comment"
