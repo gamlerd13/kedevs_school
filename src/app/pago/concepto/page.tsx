@@ -16,7 +16,8 @@ import {
 import { CiCirclePlus } from "react-icons/ci";
 
 function Page() {
-  const { conceptPayments, addData, updateData } = usePaymentConcept();
+  const { conceptPayments, addData, updateData, deleteData } =
+    usePaymentConcept();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [dataEdit, setDataEdit] = useState<PaymentConcept | null>(null);
   const {
@@ -41,6 +42,7 @@ function Page() {
               onOpen={onOpen}
               handleEdit={handleEdit}
               conceptPayments={conceptPayments}
+              deleteData={deleteData}
             />
           ) : (
             <div>cargando...</div>

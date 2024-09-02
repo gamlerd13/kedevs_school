@@ -87,7 +87,7 @@ model Payment {
   alumnoId         Int
   alumno           Alumno         @relation(fields: [alumnoId], references: [id])
   paymentConceptId Int
-  paymentConcept   PaymentConcept @relation(fields: [paymentConceptId], references: [id])
+  paymentConcept   PaymentConcept @relation(fields: [paymentConceptId], references: [id], onDelete: Cascade)
   yearId           Int            @default(1)
   year             Year           @relation(fields: [yearId], references: [id])
   paymentMethod    PaymentMethod  @default(YAPE)

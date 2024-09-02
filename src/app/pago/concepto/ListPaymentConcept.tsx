@@ -1,25 +1,48 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { PaymentConcept } from "@/models/payment";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/react";
 import { CiCirclePlus } from "react-icons/ci";
 import { MdModeEditOutline } from "react-icons/md";
-// import { RiDeleteBinLine } from "react-icons/ri";
-
+import { RiDeleteBinLine } from "react-icons/ri";
+import DeleteConfirm from "./modal/DeleteConfirm";
+import { useDisclosure } from "@nextui-org/react";
 function ListPaymentConcept({
   conceptPayments,
   onOpen,
   handleEdit,
+  deleteData,
 }: {
-  conceptPayments: PaymentConcept[];
+  conceptPayments: Required<PaymentConcept>[];
   onOpen: () => void;
   handleEdit: (data: PaymentConcept) => void;
+  deleteData: (idPaymentConcept: number) => void;
 }) {
+  const {
+    isOpen: isOpenModalDelete,
+    onOpen: onOpenModalDelete,
+    onOpenChange: onOpenChangeModalDelete,
+  } = useDisclosure();
+  const [idConceptPaymentDelete, setIdConceptPaymentDelete] = useState<
+    number | null
+  >(null);
+
+  const handleDelete = (idConceptPayment: number) => {
+    setIdConceptPaymentDelete(idConceptPayment);
+    onOpenModalDelete();
+  };
   return (
     <div
       className="grid gap-4 auto-rows-auto"
       style={{ gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))" }}
     >
+      <DeleteConfirm
+        idConceptPaymentDelete={idConceptPaymentDelete}
+        deleteData={deleteData}
+        isOpen={isOpenModalDelete}
+        onOpenChange={onOpenChangeModalDelete}
+      />
+
       <button className="h-full" onClick={onOpen}>
         <Card className="h-full hover:bg-default-400 pointer">
           <CardBody className="flex flex-col justify-center items-center">
@@ -55,11 +78,12 @@ function ListPaymentConcept({
               >
                 <MdModeEditOutline />
               </button>
-
-              {/* Add delete logic in thi button ahead */}
-              {/* <button className="rounded-full p-2 hover:bg-rose-600 hover:text-white">
+              <button
+                onClick={() => handleDelete(conceptPayment.id)}
+                className="rounded-full p-2 hover:bg-rose-600 hover:text-white"
+              >
                 <RiDeleteBinLine />
-              </button> */}
+              </button>
             </CardFooter>
           </Card>
         ))}

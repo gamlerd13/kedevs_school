@@ -8,6 +8,7 @@ interface PaymentConceptHook {
   getData: () => void;
   addData: (formData: PaymentConceptForm) => void;
   updateData: (formData: Required<PaymentConceptForm>) => void;
+  deleteData: (idPaymentConcept: number) => void;
 }
 
 export const usePaymentConcept = (): PaymentConceptHook => {
@@ -69,6 +70,21 @@ export const usePaymentConcept = (): PaymentConceptHook => {
     }
   };
 
+  const deleteData = async (idPaymentConcept: number) => {
+    try {
+      const { status, data } = await axios.delete(
+        `/api/paymentConcept/${idPaymentConcept}`,
+      );
+      console.log(status, data);
+      if (status === 204) {
+        getData();
+      }
+      toast.success("Concepto de pago eliminado satisfactoriamente");
+    } catch (error) {
+      toast.error("Hubo un error al intentar eliminar Concepto de pago");
+    }
+  };
+
   useEffect(() => {
     getData();
   }, [updateCount]);
@@ -78,5 +94,6 @@ export const usePaymentConcept = (): PaymentConceptHook => {
     getData,
     addData,
     updateData,
+    deleteData,
   };
 };

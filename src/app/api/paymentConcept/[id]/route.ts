@@ -3,7 +3,11 @@ import prisma from "@/libs/db";
 import { FormDataPaymentConcept, PaymentConceptForm } from "@/models/payment";
 import handlePrismaError from "@/libs/responseApi/handlePrismaError";
 
-export async function PUT(req: NextRequest, res: NextResponse) {
+interface Params {
+  params: { id: string };
+}
+
+export async function PUT(req: NextRequest, { params }: Params) {
   try {
     const body: PaymentConceptForm = await req.json();
     const { name, total } = body;
@@ -29,6 +33,24 @@ export async function PUT(req: NextRequest, res: NextResponse) {
       throw new Error("No se pudo actualizar el concepto de pago");
     }
     return NextResponse.json(updatedPaymentConcept, { status: 200 });
+  } catch (error) {
+    return handlePrismaError(error);
+  }
+}
+
+export async function DELETE(req: NextRequest, { params }: Params) {
+  try {
+    const idPayment = parseInt(params.id);
+    const payments = await prisma.paymentConcept.delete({
+      where: {
+        id: idPayment,
+      },
+    });
+    if (!payments) {
+      throw new Error("No se pudo eliminar concepto de pago");
+    }
+    console.log(payments);
+    return new NextResponse(null, { status: 204 }); //check this
   } catch (error) {
     return handlePrismaError(error);
   }
