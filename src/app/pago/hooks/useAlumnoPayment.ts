@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { cache, useEffect, useState } from "react";
 import axios from "axios";
 import { Alumno } from "@/models/alumno";
 import { toast } from "sonner";
@@ -27,9 +27,15 @@ export default function useAlumnoPayment<T>(): DataFetch<T> {
 
   const { handleAxiosError } = useAxiosErrorHandler();
 
-  const getData = async () => {
+  const getData = cache(async () => {
     try {
-      const res = await axios.get("/api/alumnoLastPayment");
+      const res = await axios.get("/api/alumnoLastPayment", {
+        headers: {
+          "Cache-Control": "no-cache", // Añadir headers para evitar caché
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      });
       if (res.status === 200) {
         setIsLoading(false);
         setData(res.data);
@@ -38,7 +44,7 @@ export default function useAlumnoPayment<T>(): DataFetch<T> {
       setIsLoading(false);
       setError(error as Error);
     }
-  };
+  });
 
   const addData = async (formData: Payment) => {
     try {
