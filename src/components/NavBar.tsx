@@ -49,9 +49,9 @@ export default function NavBar() {
       url: "/options",
     },
     // {
-    //   id: 5,
-    //   name: "reportes",
-    //   url: "/reportes",
+    //   id: 6,
+    //   name: "Ingresos",
+    //   url: "/ingresos",
     // },
   ];
 
@@ -95,16 +95,16 @@ export default function NavBar() {
             Concepto Pago
           </Link>
         </NavbarItem>
+        {/* <NavbarItem isActive={pathname == "/ingresos"}>
+          <Link href="/ingresos" aria-current="page">
+            Ingresos
+          </Link>
+        </NavbarItem> */}
         <NavbarItem isActive={pathname == "/options"}>
           <Link href="/options" aria-current="page">
             Opciones
           </Link>
         </NavbarItem>
-        {/* <NavbarItem isActive={pathname == "/reportes"}>
-          <Link color="foreground" href="/reportes">
-            reportes
-          </Link>
-        </NavbarItem> */}
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="flex gap-x-2">

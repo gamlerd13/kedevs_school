@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { Payment } from "@/models/payment";
 import useAxiosErrorHandler from "@/hooks/handleAxiosError";
+import { useIngresos } from "./useIngresos";
 
 export interface DataFetch<T> {
   // data: T[] | null;
@@ -18,6 +19,7 @@ export interface DataFetch<T> {
 }
 
 export default function useAlumnoPayment<T>(): DataFetch<T> {
+  const { getIngresos } = useIngresos();
   const [data, setData] = useState<T[]>([]);
 
   const [isLoading, setIsLoading] = useState<Boolean>(true);
@@ -44,6 +46,7 @@ export default function useAlumnoPayment<T>(): DataFetch<T> {
       if (response.status == 201) {
         toast.success("Pago realizado Exitosamente");
         getData();
+        getIngresos();
       }
     } catch (error) {
       handleAxiosError(error, "Pagos", "Crear");
@@ -57,6 +60,7 @@ export default function useAlumnoPayment<T>(): DataFetch<T> {
       if (response.status == 200) {
         toast.success("Alumno actualizado con éxito");
         getData();
+        getIngresos();
       }
     } catch (error) {
       toast.success("Hubo un error al actualizar Alumno");

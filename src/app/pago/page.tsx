@@ -8,6 +8,7 @@ import { Alumno, AlumnoList, FormData } from "@/models/alumno";
 import ModalForm from "./ModalForm";
 import useAlumnoPayment from "./hooks/useAlumnoPayment";
 import { AlumnoPayment, Payment } from "@/models/payment";
+import { useIngresos } from "./hooks/useIngresos";
 
 interface ModalContext {
   isOpen: boolean;
@@ -61,6 +62,8 @@ function Page() {
     updateData,
   } = useAlumnoPayment<AlumnoPayment>();
 
+  const { ingresos } = useIngresos();
+
   const [isCreate, setIsCreate] = useState<boolean>(true);
   const [alumno, setAlumno] = useState<Alumno | null>(null);
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -94,7 +97,7 @@ function Page() {
               <UseAlumnoContext.Provider
                 value={{ alumnos, addData, updateData }}
               >
-                <AlumnoListComponent />
+                <AlumnoListComponent ingresos={ingresos} />
                 <ModalForm />
               </UseAlumnoContext.Provider>
             </FormContext.Provider>

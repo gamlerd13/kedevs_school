@@ -33,7 +33,7 @@ function removeAccents(str: string) {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
-function AlumnoListComponent() {
+function AlumnoListComponent({ ingresos }: { ingresos: number | null }) {
   const { isOpen, onOpen, onOpenChange, onClose } = useContext(ModalContext);
   const { alumnos, addData, updateData } = useContext(UseAlumnoContext);
   const { handleOpenModal } = useContext(FormContext);
@@ -92,6 +92,7 @@ function AlumnoListComponent() {
           setRowsPerPage,
           searchFilter,
           setSearchFilter,
+          ingresos,
         })}
         classNames={{
           wrapper: "min-h-[222px]",
@@ -174,6 +175,7 @@ interface TopContentDataTable {
   setRowsPerPage: (row: number) => void;
   searchFilter: string;
   setSearchFilter: (value: string) => void;
+  ingresos: number | null;
 }
 
 const TopContentDataTable = ({
@@ -181,11 +183,18 @@ const TopContentDataTable = ({
   setRowsPerPage,
   searchFilter,
   setSearchFilter,
+  ingresos,
 }: TopContentDataTable) => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between gap-3 items-end">
         <InputSearch value={searchFilter} setValue={setSearchFilter} />
+        <div className="text-default-700 text-sm">
+          Total ingresos hoy:{" "}
+          <span className="text-green-400 font-bold">
+            S/. {ingresos && ingresos}
+          </span>
+        </div>
       </div>
       <div className="flex justify-between items-center">
         <span className="text-default-400 text-small">

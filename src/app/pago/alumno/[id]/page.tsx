@@ -184,7 +184,7 @@ const AlumnoPage = () => {
                               paymentsAlumno={paymentsAlumno}
                             />
                           }
-                          fileName={`boleta-${alumno.dni}.pdf`}
+                          fileName={`boleta-${alumno.fullName.split(" ").join("_")}.pdf`} // "nombre nombre eder luis"
                         >
                           <Button className="bg-red-900 text-white" href="">
                             Imprimir Pagos
@@ -200,7 +200,7 @@ const AlumnoPage = () => {
                               paymentsRelationAlumno={paymentsRelationAlumno}
                             />
                           }
-                          fileName={`reporte-${alumno.dni}.pdf`}
+                          fileName={`reporte-${alumno.fullName.split(" ").join("_")}.pdf`}
                         >
                           <Button href="" className="bg-red-900 text-white">
                             Generar reporte de Pagos
