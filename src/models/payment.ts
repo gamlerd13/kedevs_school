@@ -100,4 +100,4 @@ export type FormErrorsPaymentConcept = {
 
 export type PaymentIncludePaymentConcept = {
   correlativeCode?: string; //fast fix
-} & Required<Payment & { paymentConcept: PaymentConcept }>;
+} & Required<Required<Payment> & { paymentConcept: PaymentConcept }>;

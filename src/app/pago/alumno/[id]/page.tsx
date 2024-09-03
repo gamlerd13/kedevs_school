@@ -33,6 +33,7 @@ import { useThermalPrinterPayment } from "./useThermalPrinterPayment";
 import ThermalPrinterComponent from "@/components/pdfTemplates/reportAlumnoPaymentsThermalPrinterReactPdf";
 import { MdEdit } from "react-icons/md";
 import BoletaThermalPrinterComponent from "@/components/pdfTemplates/BoletaAlumnoPaymentsThermalPrinterReactPdf";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 interface PaymentsAlumno {
   paymentConcept: Required<PaymentConcept>;
@@ -61,8 +62,9 @@ export const ModalCreateUpdatePaymentContext =
 // context formulario
 interface CreateEditPayment {
   addPaymentAlumno(formData: Payment): void;
-  updatePaymentAlumno(formDataUpdate: Required<Payment>): void;
   getAlumnoPayments(idAlumno: number): void;
+  updatePaymentAlumno(formDataUpdate: Required<Payment>): void;
+  deleteDataPaymentAlumno(idPayment: number | null): void;
   alumno: Required<Alumno> | null;
 }
 
@@ -70,6 +72,7 @@ export const FormCreateEditContext = createContext<CreateEditPayment>({
   addPaymentAlumno: () => {},
   updatePaymentAlumno: () => {},
   getAlumnoPayments: () => {},
+  deleteDataPaymentAlumno: () => {},
   alumno: null,
 });
 
@@ -89,6 +92,7 @@ const AlumnoPage = () => {
     getData: getAlumnoPayments,
     addData: addPaymentAlumno,
     updateData: updatePaymentAlumno,
+    deleteData: deleteDataPaymentAlumno,
   } = useAlumnoPayment();
   const [isEdit, setIsEdit] = useState<Boolean>(false);
   const [alumno, setAlumno] = useState<Required<Alumno> | null>(null);
@@ -160,6 +164,7 @@ const AlumnoPage = () => {
             addPaymentAlumno,
             updatePaymentAlumno,
             getAlumnoPayments,
+            deleteDataPaymentAlumno,
             alumno,
           }}
         >
@@ -276,6 +281,7 @@ const ListPaymentConcept = ({
   ) => void;
 }) => {
   const { onOpen } = useContext(ModalCreateUpdatePaymentContext);
+  const { deleteDataPaymentAlumno } = useContext(FormCreateEditContext);
   return (
     <Card className="">
       <CardHeader>
@@ -292,7 +298,9 @@ const ListPaymentConcept = ({
           `${paymentRelationAlumno.payed ? "bg-green-500" : ""}`
         }
       >
-        {paymentRelationAlumno.payed ? (
+        {paymentRelationAlumno.payed &&
+        paymentRelationAlumno.payment &&
+        paymentRelationAlumno.payment.id ? (
           <div className="w-full items-center text-white">
             <div className="bg-green-500 text-sm">Pagado</div>
             <div className="flex justify-between ">
@@ -310,7 +318,7 @@ const ListPaymentConcept = ({
               >
                 <MdEdit className="text-xl" />
               </div>
-              <div>
+              <div className="flex">
                 <PDFDownloadLink
                   document={
                     <BoletaThermalPrinterComponent
@@ -321,9 +329,20 @@ const ListPaymentConcept = ({
                   fileName={`boleta-${alumno.dni}.pdf`}
                 >
                   <div className="cursor-pointer rounded-full hover:bg-slate-500 p-2">
-                    <BsFillFileEarmarkPdfFill className="text-xl " />
+                    <BsFillFileEarmarkPdfFill className="text-xl" />
                   </div>
                 </PDFDownloadLink>
+
+                <button
+                  onClick={() =>
+                    deleteDataPaymentAlumno(
+                      paymentRelationAlumno.payment?.id || null,
+                    )
+                  }
+                  className="rounded-full p-2 hover:bg-rose-500"
+                >
+                  <RiDeleteBinLine className="text-xl" />
+                </button>
               </div>
             </div>
           </div>

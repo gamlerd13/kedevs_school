@@ -90,14 +90,12 @@ const BoletaThermalPrinterComponent = ({
           <Text style={styles.headerText}>GRUPO NEWTON PARAISO</Text>
           <Text style={styles.headerText}>ISAAC NEWTON</Text>
           <Text style={styles.headerText}>RUC 20610621351</Text>
-          <Text style={styles.headerText}>
-            ASOC. EL PARAISO DE JICAMARCA JR.
-          </Text>
+          <Text style={styles.headerText}>ASOC. EL PARAISO DE JICAMARCA</Text>
           <Text style={styles.headerText}>LOS PINOS MZ I LT 14 - LIMA</Text>
           <Text style={styles.headerText}>Email: juliaurs-22@hotmail.com</Text>
           <View style={styles.line} />
           <Text style={[styles.boldText, { paddingBottom: 5 }]}>
-            BOLETA DE PAGO
+            RECIBO INTERNO
           </Text>
           <Text style={[styles.boldText, { paddingBottom: 5 }]}>
             {payment?.correlativeCode}

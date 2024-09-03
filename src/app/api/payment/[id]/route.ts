@@ -51,3 +51,20 @@ export async function PUT(req: NextRequest, { params }: Params) {
     return handlePrismaError(error);
   }
 }
+
+export async function DELETE(req: NextRequest, { params }: Params) {
+  try {
+    const idPayment = parseInt(params.id);
+    const payments = await prisma.payment.delete({
+      where: {
+        id: idPayment,
+      },
+    });
+    if (!payments) {
+      throw new Error("No se pudo eliminar pago");
+    }
+    return NextResponse.json(payments, { status: 201 });
+  } catch (error) {
+    return handlePrismaError(error);
+  }
+}

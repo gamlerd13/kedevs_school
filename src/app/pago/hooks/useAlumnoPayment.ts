@@ -29,13 +29,16 @@ export default function useAlumnoPayment<T>(): DataFetch<T> {
 
   const getData = cache(async () => {
     try {
-      const res = await axios.get("/api/alumnoLastPayment", {
-        headers: {
-          "Cache-Control": "no-cache", // Añadir headers para evitar caché
-          Pragma: "no-cache",
-          Expires: "0",
+      const res = await axios.get(
+        `/api/alumnoLastPayment?timestamp=${new Date().getTime()}`,
+        {
+          headers: {
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+            Expires: "0",
+          },
         },
-      });
+      );
       if (res.status === 200) {
         setIsLoading(false);
         setData(res.data);

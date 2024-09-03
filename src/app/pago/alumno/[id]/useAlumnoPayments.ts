@@ -15,6 +15,7 @@ interface PaymentConceptHook {
   payments: PaymentIncludePaymentConcept[];
   //   addData: (formData: FormDataPaymentConcept) => void;
   updateData: (formDataUpdate: Required<Payment>) => void;
+  deleteData: (idPayment: number | null) => void;
 }
 
 export const useAlumnoPayment = (): PaymentConceptHook => {
@@ -63,6 +64,24 @@ export const useAlumnoPayment = (): PaymentConceptHook => {
         }
       }
     } catch (error) {
+      handleAxiosError(error, "Pagos", "Actualizar");
+    }
+  };
+
+  const deleteData = async (idPayment: number | null) => {
+    try {
+      if (!idPayment) {
+        throw Error("Erro");
+      }
+      const { status } = await axios.delete(`/api/payment/${idPayment}`);
+
+      if (status === 201) {
+        toast.success("Pago eliminado Exitosamente");
+        if (id) {
+          await getData(parseInt(id));
+        }
+      }
+    } catch (error) {
       handleAxiosError(error, "Pagos", "Crear");
     }
   };
@@ -75,7 +94,8 @@ export const useAlumnoPayment = (): PaymentConceptHook => {
   return {
     payments,
     getData,
-    updateData,
     addData,
+    updateData,
+    deleteData,
   };
 };

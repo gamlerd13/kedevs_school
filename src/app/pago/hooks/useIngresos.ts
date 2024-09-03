@@ -6,7 +6,9 @@ export const useIngresos = () => {
   const [ingresos, setIngresos] = useState<number | null>(null);
   const getIngresos = async () => {
     try {
-      const { status, data } = await axios.get("/api/ingresos");
+      const { status, data } = await axios.get(
+        `/api/ingresos?timestamp=${new Date().getTime()}`,
+      );
       console.log(status, data);
       if (status === 200) {
         setIngresos(data);

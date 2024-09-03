@@ -67,9 +67,9 @@ const ThermalPrinterComponent = ({
   const fecha = getDateHour(date.toString()).fechaDMY;
 
   const items = paymentsAlumno.length; // 1 item -> 30
-  const totalPrice = paymentsAlumno.reduce((sum: number, payment) => {
-    return sum + parseFloat(payment.total);
-  }, 0);
+  // const totalPrice = paymentsAlumno.reduce((sum: number, payment) => {
+  //   return sum + parseFloat(payment.total);
+  // }, 0);
 
   const tamaño = 420 + 30 * items;
   return (
@@ -96,14 +96,12 @@ const ThermalPrinterComponent = ({
           <Text style={styles.headerText}>GRUPO NEWTON PARAISO</Text>
           <Text style={styles.headerText}>ISAAC NEWTON</Text>
           <Text style={styles.headerText}>RUC 20610621351</Text>
-          <Text style={styles.headerText}>
-            ASOC. EL PARAISO DE JICAMARCA JR.
-          </Text>
+          <Text style={styles.headerText}>ASOC. EL PARAISO DE JICAMARCA</Text>
           <Text style={styles.headerText}>LOS PINOS MZ I LT 14 - LIMA</Text>
           <Text style={styles.headerText}>Email: juliaurs-22@hotmail.com</Text>
           <View style={styles.line} />
           <Text style={[styles.boldText, { paddingBottom: 5 }]}>
-            BOLETA DE PAGO
+            RECIBO INTERNO
           </Text>
           <Text>F. EMISIÓN: {fecha}</Text>
           <Text>H. EMISIÓN: {hour}</Text>
@@ -145,11 +143,11 @@ const ThermalPrinterComponent = ({
         </View>
 
         {/* Total */}
-        <View>
+        {/* <View>
           <Text style={[styles.items, { textAlign: "right" }]}>
             Total: S/. {totalPrice.toFixed(2)}
           </Text>
-        </View>
+        </View> */}
       </Page>
     </Document>
   );
