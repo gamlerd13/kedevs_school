@@ -366,3 +366,4 @@ const ListPaymentConcept = ({
 };
 
 export default AlumnoPage;
+export const dynamicParams = true;

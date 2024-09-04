@@ -51,3 +51,4 @@ export async function GET(req: NextRequest) {
     return handlePrismaError(error);
   }
 }
+export const dynamic = 'force-dynamic'
