@@ -20,8 +20,11 @@ export const useIngresos = () => {
       //   setIngresos(data);
       // }
 
-      const res = await fetch(`/api/ingresos?timestamp=${new Date().getTime()}`, { next: { revalidate: 0  }, cache:  'no-store'})
-     
+      const res = await fetch(
+        `/api/ingresos?timestamp=${new Date().getTime()}`,
+        { next: { revalidate: 0 }, cache: "no-store" },
+      );
+
       const data = await res.json();
       if (res.status === 200) {
         setIngresos(data);

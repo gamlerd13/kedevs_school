@@ -26,12 +26,15 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    return NextResponse.json(ingresoTotal.toFixed(2), { status: 200,  headers: {
-      'Cache-Control': 'no-store', // Este encabezado desactiva el almacenamiento en caché
-    }, });
+    return NextResponse.json(ingresoTotal.toFixed(2), {
+      status: 200,
+      headers: {
+        "Cache-Control": "no-store", // Este encabezado desactiva el almacenamiento en caché
+      },
+    });
   } catch (error) {
     return handlePrismaError(error);
   }
 }
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
