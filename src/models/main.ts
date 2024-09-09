@@ -20,8 +20,3 @@ export type Year = {
   year: number;
   isDefault: boolean;
 };
-
-// declare module "bcrypt" {
-//   const bcrypt: any;
-//   export default bcrypt;
-// }

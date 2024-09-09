@@ -20,6 +20,8 @@ import {
   Chip,
   Button,
 } from "@nextui-org/react";
+
+import { useDisclosure } from "@nextui-org/modal";
 import { Badge } from "@nextui-org/badge";
 import { FormContext, ModalContext, UseAlumnoContext } from "./page";
 import { ButtonCreateInstance } from "@/components/Button";
@@ -28,6 +30,8 @@ import { ToolTipEdit } from "@/components/ToolTip";
 import ModalForm from "./ModalForm";
 import { AlumnoPayment } from "@/models/payment";
 import Link from "next/link";
+import { RiFileExcel2Fill } from "react-icons/ri";
+import ModalReportIngresosStyleSheet from "./modal/ModalReportIngresosStyleSheet";
 
 function removeAccents(str: string) {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -185,34 +189,59 @@ const TopContentDataTable = ({
   setSearchFilter,
   ingresos,
 }: TopContentDataTable) => {
+  const { onOpen, onClose, onOpenChange, isOpen } = useDisclosure();
+
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-between gap-3 items-end">
-        <InputSearch value={searchFilter} setValue={setSearchFilter} />
-        <div className="text-default-700 text-sm">
+    <>
+      <ModalReportIngresosStyleSheet
+        onOpen={onOpen}
+        onClose={onClose}
+        onOpenChange={onOpenChange}
+        isOpen={isOpen}
+      />
+      <div className="flex flex-col gap-4">
+        <div className="flex justify-between gap-3 items-end">
+          <InputSearch value={searchFilter} setValue={setSearchFilter} />
+          {/* <div className="text-default-700 text-sm">
           Total ingresos hoy:{" "}
           <span className="text-green-400 font-bold">
             S/. {ingresos && ingresos}
           </span>
+        </div> */}
+          <div className="text-sm">
+            <Button
+              onPress={() => onOpen()}
+              color="success"
+              startContent={<RiFileExcel2Fill />}
+            >
+              Reporte de Ingresos
+            </Button>
+          </div>
+        </div>
+        <div className="flex justify-between items-center">
+          <div className="text-default-700 text-sm">
+            Total ingresos hoy:{" "}
+            <span className="text-green-400 font-bold">
+              S/. {ingresos && ingresos}
+            </span>
+          </div>
+          <span className="text-default-400 text-small">
+            Total {alumnos} alumnos
+          </span>
+          <label className="flex items-center text-default-400 text-small">
+            Filas por pagina:
+            <select
+              className="bg-transparent outline-none text-default-400 text-small"
+              onChange={(e) => setRowsPerPage(Number(e.target.value))}
+            >
+              <option value="10">10</option>
+              <option value="5">5</option>
+              <option value="15">15</option>
+            </select>
+          </label>
         </div>
       </div>
-      <div className="flex justify-between items-center">
-        <span className="text-default-400 text-small">
-          Total {alumnos} alumnos
-        </span>
-        <label className="flex items-center text-default-400 text-small">
-          Filas por pagina:
-          <select
-            className="bg-transparent outline-none text-default-400 text-small"
-            onChange={(e) => setRowsPerPage(Number(e.target.value))}
-          >
-            <option value="10">10</option>
-            <option value="5">5</option>
-            <option value="15">15</option>
-          </select>
-        </label>
-      </div>
-    </div>
+    </>
   );
 };
 
