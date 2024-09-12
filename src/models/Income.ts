@@ -11,3 +11,13 @@ export enum IncomeFrequency {
 export type IncomeGet = Payment & {
   alumno: Alumno;
 };
+export interface Day {
+  year: string;
+  month: string;
+  day: string;
+}
+
+export interface RangeDate {
+  initialDate: Day;
+  finalDate: Day;
+}

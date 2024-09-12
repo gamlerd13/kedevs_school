@@ -1,63 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/libs/db";
 import handlePrismaError from "@/libs/responseApi/handlePrismaError";
-import { IncomeFrequency, IncomeGet } from "@/models/Income";
+import { IncomeFrequency, IncomeGet, RangeDate } from "@/models/Income";
 
 export async function POST(req: NextRequest) {
   try {
-    //Firts find the income frecuency
-    const body: IncomeFrequency = await req.json();
+    const body: RangeDate = await req.json();
 
-    let payments: IncomeGet[] = [];
+    const startOfDay = new Date(
+      parseInt(body.initialDate.year),
+      parseInt(body.initialDate.month) - 1,
+      parseInt(body.initialDate.day),
+    );
+    startOfDay.setHours(0, 0, 0, 0);
 
-    if (body === IncomeFrequency.Day) {
-      const startOfDay = new Date();
-      startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(
+      parseInt(body.finalDate.year),
+      parseInt(body.finalDate.month) - 1,
+      parseInt(body.finalDate.day),
+    );
+    endOfDay.setHours(23, 59, 59, 999);
 
-      const endOfDay = new Date();
-      endOfDay.setHours(23, 59, 59, 999);
-
-      payments = await prisma.payment.findMany({
-        where: {
-          datePayment: {
-            gte: startOfDay, // mayor o igual que el inicio del día
-            lte: endOfDay, // menor o igual que el final del día
-          },
+    const payments = await prisma.payment.findMany({
+      where: {
+        datePayment: {
+          gte: startOfDay, // mayor o igual que el inicio del día
+          lte: endOfDay, // menor o igual que el final del día
         },
-        include: {
-          alumno: true,
-        },
-      });
-    } else if (body === IncomeFrequency.Month) {
-      const today = new Date();
-      const month = today.getMonth();
-      const year = today.getFullYear();
-
-      const startOfDay = new Date(`${year}-${month}-1`);
-      startOfDay.setHours(0, 0, 0, 0);
-
-      const endOfDay = new Date();
-      endOfDay.setHours(23, 59, 59, 999);
-
-      payments = await prisma.payment.findMany({
-        where: {
-          datePayment: {
-            gte: startOfDay, // mayor o igual que el inicio del día
-            lte: endOfDay, // menor o igual que el final del día
-          },
-        },
-        include: {
-          alumno: true,
-        },
-      });
-    }
-
+      },
+      include: {
+        alumno: true,
+        paymentConcept: true,
+      },
+    });
+    const opciones: Intl.DateTimeFormatOptions = {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    };
     const paymentFormatExcel = payments.map((income, index) => ({
       Numero: index + 1,
       Nombre: income.alumno.fullName,
       Documento: income.alumno.dni,
-      Fecha: income.datePayment.toISOString().split("T")[0],
+      // Fecha: income.datePayment.toISOString().split("T")[0],
+      Fecha: income.datePayment.toLocaleDateString("es-ES", opciones),
       Código: income.codePayment,
+      ConceptoPago: income.paymentConcept.name,
       Pago: income.total,
     }));
 
